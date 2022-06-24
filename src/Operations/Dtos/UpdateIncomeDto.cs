@@ -1,4 +1,4 @@
-namespace Common.DTOs.Operations;
+namespace Operations.Dtos;
 
 public class UpdateIncomeDto
 {

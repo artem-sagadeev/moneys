@@ -1,6 +1,6 @@
-﻿using Common.DTOs.Operations;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Operations.Dtos;
 using Operations.Entities;
 using Operations.Interfaces;
 using Operations.Logic.Cards;

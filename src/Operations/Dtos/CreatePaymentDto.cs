@@ -1,6 +1,6 @@
-namespace Common.DTOs.Operations;
+namespace Operations.Dtos;
 
-public class CreateIncomeDto
+public class CreatePaymentDto
 {
     public string Name { get; set; }
     

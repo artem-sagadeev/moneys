@@ -1,3 +1,7 @@
+using Identity.Data;
+using Identity.Entities;
+using Identity.Logic;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Operations.Data;
 using Operations.Logic.Cards;
@@ -9,15 +13,22 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddRazorPages();
 
-builder.Services.AddDbContext<OperationsContext>(options =>
-{
-    options.UseNpgsql(builder.Configuration.GetConnectionString("Heroku"), npgsqlOptions => 
-        npgsqlOptions.MigrationsAssembly("Web"));
-});
-
 builder.Services.AddScoped<IIncomeService, IncomeService>();
 builder.Services.AddScoped<IPaymentService, PaymentService>();
 builder.Services.AddScoped<ICardService, CardService>();
+builder.Services.AddDbContext<OperationsContext>(options =>
+{
+    options.UseNpgsql(builder.Configuration.GetConnectionString("Heroku"), npgsqlOptions => 
+        npgsqlOptions.MigrationsAssembly("Operations"));
+});
+
+builder.Services.AddScoped<IAccountService, AccountService>();
+builder.Services.AddIdentity<User, IdentityRole>().AddEntityFrameworkStores<IdentityContext>();
+builder.Services.AddDbContext<IdentityContext>(options =>
+{
+    options.UseNpgsql(builder.Configuration.GetConnectionString("Heroku"), npgsqlOptions => 
+        npgsqlOptions.MigrationsAssembly("Identity"));
+});
 
 var app = builder.Build();
 
@@ -34,6 +45,7 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapRazorPages();

@@ -1,4 +1,4 @@
-using Common.DTOs.Operations;
+using Operations.Dtos;
 using Operations.Interfaces;
 
 namespace Operations.Entities;

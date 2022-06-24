@@ -8,7 +8,7 @@ using Operations.Data;
 
 #nullable disable
 
-namespace Web.Migrations
+namespace Operations.Migrations
 {
     [DbContext(typeof(OperationsContext))]
     partial class OperationsContextModelSnapshot : ModelSnapshot

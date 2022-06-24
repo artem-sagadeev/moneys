@@ -1,7 +1,7 @@
-using Common.DTOs.Operations;
 using Common.Exceptions;
 using Microsoft.EntityFrameworkCore;
 using Operations.Data;
+using Operations.Dtos;
 using Operations.Entities;
 
 namespace Operations.Logic.Incomes;

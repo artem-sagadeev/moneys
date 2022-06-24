@@ -9,10 +9,10 @@ using Operations.Data;
 
 #nullable disable
 
-namespace Web.Migrations
+namespace Operations.Migrations
 {
     [DbContext(typeof(OperationsContext))]
-    [Migration("20220624181248_Initial")]
+    [Migration("20220624202108_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

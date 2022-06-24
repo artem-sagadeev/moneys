@@ -22,9 +22,12 @@
                     <li class="nav-item">
                         <a class="nav-link text-dark" asp-area="" asp-page="/Operations">Operations</a>
                     </li>
-                    <li class="nav-item ms-auto">
-                        <a class="nav-link text-dark" asp-area="" asp-page="/Profile">Profile</a>
-                    </li>
+                    @if (User.Identity is not null && User.Identity.IsAuthenticated)
+                    {
+                        <li class="nav-item ms-auto">
+                            <a class="nav-link text-dark" asp-area="" asp-page="/Profile">Profile</a>
+                        </li>
+                    }
                 </ul>
             </div>
         </div>
