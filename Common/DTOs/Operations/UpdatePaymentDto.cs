@@ -1,4 +1,4 @@
-namespace Common.DTOs.Payments;
+namespace Common.DTOs.Operations;
 
 public class UpdatePaymentDto
 {

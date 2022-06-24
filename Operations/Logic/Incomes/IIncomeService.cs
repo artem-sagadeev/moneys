@@ -1,7 +1,7 @@
-using Common.DTOs.Payments;
-using Payments.Entities;
+using Common.DTOs.Operations;
+using Operations.Entities;
 
-namespace Payments.Logic.Incomes;
+namespace Operations.Logic.Incomes;
 
 public interface IIncomeService
 {

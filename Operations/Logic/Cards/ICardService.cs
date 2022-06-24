@@ -1,6 +1,6 @@
-using Payments.Entities;
+using Operations.Entities;
 
-namespace Payments.Logic.Cards;
+namespace Operations.Logic.Cards;
 
 public interface ICardService
 {

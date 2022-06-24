@@ -1,16 +1,16 @@
-using Common.DTOs.Payments;
+using Common.DTOs.Operations;
 using Common.Exceptions;
 using Microsoft.EntityFrameworkCore;
-using Payments.Data;
-using Payments.Entities;
+using Operations.Data;
+using Operations.Entities;
 
-namespace Payments.Logic.Incomes;
+namespace Operations.Logic.Incomes;
 
 public class IncomeService : IIncomeService
 {
-    private readonly PaymentsContext _context;
+    private readonly OperationsContext _context;
 
-    public IncomeService(PaymentsContext context)
+    public IncomeService(OperationsContext context)
     {
         _context = context;
     }
@@ -37,19 +37,17 @@ public class IncomeService : IIncomeService
         if (card is null)
             throw new EntityNotFoundException();
 
-        if (dto.Amount > card.Balance)
-            throw new NotEnoughMoneyException();
-
         var income = new Income(dto);
         _context.Incomes.Add(income);
         card.Balance += income.Amount;
+        await _context.SaveChangesAsync();
 
         return income.Id;
     }
 
     public async Task Update(UpdateIncomeDto dto)
     {
-        var income = await _context.Payments.FindAsync(dto.Id);
+        var income = await _context.Incomes.FindAsync(dto.Id);
 
         if (income is null)
             throw new EntityNotFoundException();

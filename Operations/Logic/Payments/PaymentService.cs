@@ -1,16 +1,16 @@
-using Common.DTOs.Payments;
+using Common.DTOs.Operations;
 using Common.Exceptions;
 using Microsoft.EntityFrameworkCore;
-using Payments.Data;
-using Payments.Entities;
+using Operations.Data;
+using Operations.Entities;
 
-namespace Payments.Logic.Payments;
+namespace Operations.Logic.Payments;
 
 public class PaymentService : IPaymentService
 {
-    private readonly PaymentsContext _context;
+    private readonly OperationsContext _context;
 
-    public PaymentService(PaymentsContext context)
+    public PaymentService(OperationsContext context)
     {
         _context = context;
     }
@@ -43,6 +43,7 @@ public class PaymentService : IPaymentService
         var payment = new Payment(dto);
         _context.Payments.Add(payment);
         card.Balance -= payment.Amount;
+        await _context.SaveChangesAsync();
 
         return payment.Id;
     }

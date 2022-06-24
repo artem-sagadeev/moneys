@@ -1,7 +1,7 @@
-using Common.DTOs.Payments;
-using Payments.Entities;
+using Common.DTOs.Operations;
+using Operations.Entities;
 
-namespace Payments.Logic.Payments;
+namespace Operations.Logic.Payments;
 
 public interface IPaymentService
 {

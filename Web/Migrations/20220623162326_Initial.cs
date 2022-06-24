@@ -43,7 +43,7 @@ namespace Web.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Payments",
+                name: "Operations",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
@@ -70,7 +70,7 @@ namespace Web.Migrations
 
             migrationBuilder.CreateIndex(
                 name: "IX_Payments_CardId",
-                table: "Payments",
+                table: "Operations",
                 column: "CardId");
         }
 
@@ -80,7 +80,7 @@ namespace Web.Migrations
                 name: "Incomes");
 
             migrationBuilder.DropTable(
-                name: "Payments");
+                name: "Operations");
 
             migrationBuilder.DropTable(
                 name: "Cards");

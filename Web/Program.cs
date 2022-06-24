@@ -1,16 +1,23 @@
 using Microsoft.EntityFrameworkCore;
-using Payments.Data;
+using Operations.Data;
+using Operations.Logic.Cards;
+using Operations.Logic.Incomes;
+using Operations.Logic.Payments;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
 
-builder.Services.AddDbContext<PaymentsContext>(options =>
+builder.Services.AddDbContext<OperationsContext>(options =>
 {
     options.UseNpgsql(builder.Configuration.GetConnectionString("Main"), npgsqlOptions => 
         npgsqlOptions.MigrationsAssembly("Web"));
 });
+
+builder.Services.AddScoped<IIncomeService, IncomeService>();
+builder.Services.AddScoped<IPaymentService, PaymentService>();
+builder.Services.AddScoped<ICardService, CardService>();
 
 var app = builder.Build();
 

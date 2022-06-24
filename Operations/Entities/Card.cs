@@ -1,4 +1,4 @@
-namespace Payments.Entities;
+namespace Operations.Entities;
 
 public class Card
 {

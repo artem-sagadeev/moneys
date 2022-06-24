@@ -1,9 +1,9 @@
 using Microsoft.EntityFrameworkCore;
-using Payments.Entities;
+using Operations.Entities;
 
-namespace Payments.Data;
+namespace Operations.Data;
 
-public class PaymentsContext : DbContext
+public class OperationsContext : DbContext
 {
     public DbSet<Card> Cards { get; set; }
     
@@ -11,5 +11,5 @@ public class PaymentsContext : DbContext
     
     public DbSet<Income> Incomes { get; set; }
     
-    public PaymentsContext(DbContextOptions<PaymentsContext> options) : base(options) { }
+    public OperationsContext(DbContextOptions<OperationsContext> options) : base(options) { }
 }

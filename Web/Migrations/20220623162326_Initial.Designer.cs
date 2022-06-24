@@ -5,13 +5,13 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
-using Payments.Data;
+using Operations.Data;
 
 #nullable disable
 
 namespace Web.Migrations
 {
-    [DbContext(typeof(PaymentsContext))]
+    [DbContext(typeof(OperationsContext))]
     [Migration("20220623162326_Initial")]
     partial class Initial
     {
@@ -24,7 +24,7 @@ namespace Web.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("Payments.Entities.Card", b =>
+            modelBuilder.Entity("Operations.Entities.Card", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -38,7 +38,7 @@ namespace Web.Migrations
                     b.ToTable("Cards");
                 });
 
-            modelBuilder.Entity("Payments.Entities.Income", b =>
+            modelBuilder.Entity("Operations.Entities.Income", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -63,7 +63,7 @@ namespace Web.Migrations
                     b.ToTable("Incomes");
                 });
 
-            modelBuilder.Entity("Payments.Entities.Payment", b =>
+            modelBuilder.Entity("Operations.Entities.Payment", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -85,12 +85,12 @@ namespace Web.Migrations
 
                     b.HasIndex("CardId");
 
-                    b.ToTable("Payments");
+                    b.ToTable("Operations");
                 });
 
-            modelBuilder.Entity("Payments.Entities.Income", b =>
+            modelBuilder.Entity("Operations.Entities.Income", b =>
                 {
-                    b.HasOne("Payments.Entities.Card", "Card")
+                    b.HasOne("Operations.Entities.Card", "Card")
                         .WithMany("Incomes")
                         .HasForeignKey("CardId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -99,10 +99,10 @@ namespace Web.Migrations
                     b.Navigation("Card");
                 });
 
-            modelBuilder.Entity("Payments.Entities.Payment", b =>
+            modelBuilder.Entity("Operations.Entities.Payment", b =>
                 {
-                    b.HasOne("Payments.Entities.Card", "Card")
-                        .WithMany("Payments")
+                    b.HasOne("Operations.Entities.Card", "Card")
+                        .WithMany("Operations")
                         .HasForeignKey("CardId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -110,11 +110,11 @@ namespace Web.Migrations
                     b.Navigation("Card");
                 });
 
-            modelBuilder.Entity("Payments.Entities.Card", b =>
+            modelBuilder.Entity("Operations.Entities.Card", b =>
                 {
                     b.Navigation("Incomes");
 
-                    b.Navigation("Payments");
+                    b.Navigation("Operations");
                 });
 #pragma warning restore 612, 618
         }

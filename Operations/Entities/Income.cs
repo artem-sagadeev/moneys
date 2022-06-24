@@ -1,8 +1,9 @@
-using Common.DTOs.Payments;
+using Common.DTOs.Operations;
+using Operations.Interfaces;
 
-namespace Payments.Entities;
+namespace Operations.Entities;
 
-public class Income
+public class Income : IOperation
 {
     public Guid Id { get; set; }
     
@@ -19,8 +20,9 @@ public class Income
     public Income(CreateIncomeDto dto)
     {
         Id = Guid.NewGuid();
+        Name = dto.Name;
         Amount = dto.Amount;
-        DateTime = DateTime.Now;
+        DateTime = DateTime.UtcNow;
         CardId = dto.CardId;
     }
     

@@ -1,15 +1,15 @@
 using Common.Exceptions;
 using Microsoft.EntityFrameworkCore;
-using Payments.Data;
-using Payments.Entities;
+using Operations.Data;
+using Operations.Entities;
 
-namespace Payments.Logic.Cards;
+namespace Operations.Logic.Cards;
 
 public class CardService : ICardService
 {
-    private readonly PaymentsContext _context;
+    private readonly OperationsContext _context;
 
-    public CardService(PaymentsContext context)
+    public CardService(OperationsContext context)
     {
         _context = context;
     }
