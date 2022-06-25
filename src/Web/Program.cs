@@ -23,7 +23,11 @@ builder.Services.AddDbContext<OperationsContext>(options =>
 });
 
 builder.Services.AddScoped<IAccountService, AccountService>();
-builder.Services.AddIdentity<User, IdentityRole>().AddEntityFrameworkStores<IdentityContext>();
+builder.Services.AddIdentity<User, IdentityRole>(options =>
+{
+    options.Password.RequireUppercase = false;
+    options.Password.RequireNonAlphanumeric = false;
+}).AddEntityFrameworkStores<IdentityContext>();
 builder.Services.AddDbContext<IdentityContext>(options =>
 {
     options.UseNpgsql(builder.Configuration.GetConnectionString("Heroku"), npgsqlOptions => 

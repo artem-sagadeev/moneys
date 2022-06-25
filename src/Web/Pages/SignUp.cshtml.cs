@@ -9,6 +9,7 @@ namespace Web.Pages;
 
 public class SignUpModel : PageModel
 {
+    
     private readonly SignInManager<User> _signInManager;
     private readonly IAccountService _accountService;
 
@@ -17,8 +18,6 @@ public class SignUpModel : PageModel
         _signInManager = signInManager;
         _accountService = accountService;
     }
-    
-    public List<string> Errors { get; private set; }
 
     public IActionResult OnGet()
     {
@@ -33,11 +32,13 @@ public class SignUpModel : PageModel
         if (_signInManager.IsSignedIn(User))
             return RedirectToPage("Profile");
         
-        var result = await _accountService.SignUp(dto);
-        if (result.Succeeded)
+        var user = await _accountService.SignUp(dto);
+        if (user is not null)
+        {
+            await _signInManager.SignInAsync(user, true);
             return RedirectToPage("Profile");
-
-        Errors = new List<string>(result.Errors.Select(error => error.Description));
+        }
+        
         return Page();
     }
 }

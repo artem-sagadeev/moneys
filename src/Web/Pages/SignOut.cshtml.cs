@@ -17,7 +17,7 @@ public class SignOutModel : PageModel
         _accountService = accountService;
     }
     
-    public async Task<IActionResult> OnPost()
+    public async Task<IActionResult> OnGet()
     {
         if (_signInManager.IsSignedIn(User))
             await _accountService.SignOut();

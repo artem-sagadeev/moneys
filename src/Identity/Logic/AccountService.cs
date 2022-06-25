@@ -32,7 +32,7 @@ public class AccountService : IAccountService
         return result;
     }
 
-    public async Task<IdentityResult> SignUp(SignUpDto dto)
+    public async Task<User> SignUp(SignUpDto dto)
     {
         if (string.IsNullOrWhiteSpace(dto.Login))
             throw new FieldIsRequiredException();
@@ -47,7 +47,7 @@ public class AccountService : IAccountService
         var user = new User(dto);
         var result = await _userManager.CreateAsync(user, dto.Password);
 
-        return result;
+        return result.Succeeded ? user : null;
     }
 
     public async Task SignOut()
