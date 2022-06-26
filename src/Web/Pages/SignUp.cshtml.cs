@@ -41,4 +41,11 @@ public class SignUpModel : PageModel
         
         return Page();
     }
+
+    public async Task<IActionResult> OnGetUnique(string login)
+    {
+        var isUnique = await _accountService.IsLoginUnique(login);
+
+        return Content(isUnique.ToString());
+    }
 }

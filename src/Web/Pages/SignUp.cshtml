@@ -4,32 +4,56 @@
 <div class="d-flex justify-content-center align-items-center">
     <form method="POST" id="signUpForm">
         <div class="mb-3">
-            <label for="login" class="form-label">Email address</label>
-            <input type="text" class="form-control input-dark" id="login" placeholder="Login" name="login" autocomplete="off">
+            <label for="login" class="form-label">Login</label>
+            <input type="text" class="form-control input-dark" id="login" placeholder="Login" name="login" autocomplete="off" aria-describedby="loginMessage" required>
+            <div id="loginMessage" class="invalid-feedback">
+                This login is already used
+            </div>
         </div>
         <div class="mb-3">
             <label for="password" class="form-label">Password</label>
-            <input type="password" class="form-control input-dark" id="password" placeholder="Password" name="password" autocomplete="off">
+            <input type="password" class="form-control input-dark" id="password" placeholder="Password" name="password" autocomplete="off" required>
         </div>
         <div class="mb-3">
             <label for="password" class="form-label">Password</label>
-            <input type="password" class="form-control input-dark" id="repeatPassword" placeholder="Repeat password" autocomplete="off">
+            <input type="password" class="form-control input-dark" id="repeatPassword" placeholder="Repeat password" autocomplete="off" aria-describedby="passwordMessage" required>
+            <div id="repeatPasswordMessage" class="invalid-feedback">
+                Passwords doesn't match
+            </div>
         </div>
         <div class="mb-3 form-check">
             <input type="checkbox" class="form-check-input" id="check">
             <label class="form-check-label" for="check" name="remember">Check me out</label>
         </div>
-        <button type="submit" class="btn btn-dark">Submit</button>
+        <button id="signUpButton" type="button" class="btn btn-dark">Submit</button>
     </form>
 </div>
 
 <script>
 let form = document.getElementById("signUpForm");
-form.onsubmit = function() {
+let button = document.getElementById("signUpButton");
+
+button.onclick = async function() {
+    let login = document.getElementById("login")
     let password = document.getElementById("password");
     let repeatPassword = document.getElementById("repeatPassword");
     
-    if (password !== repeatPassword)
+    if (password.value !== repeatPassword.value) 
+    {
+        password.classList.add("is-invalid");
+        repeatPassword.classList.add("is-invalid");  
+        return false;
+    }
         
+    let response = await fetch("/SignUp?handler=Unique&login=" + login.value)
+    let isUniqueLogin = await response.text()
+    console.log(isUniqueLogin);
+    if (isUniqueLogin === "False")
+    {
+        login.classList.add("is-invalid");
+        return false;        
+    }
+    
+    form.submit();
 }
 </script>
