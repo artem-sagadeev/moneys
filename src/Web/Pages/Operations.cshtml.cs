@@ -35,7 +35,7 @@ public class OperationsModel : PageModel
             return Forbid();
 
         var user = await _signInManager.UserManager.GetUserAsync(User);
-        var cardId = user.CardId;
+        var cardId = (await _cardService.GetByUserId(user.Id)).FirstOrDefault()!.Id; //TODO: rework
         
         Card = await _cardService.GetById(cardId);
         
@@ -57,7 +57,7 @@ public class OperationsModel : PageModel
             return Forbid();
 
         var user = await _signInManager.UserManager.GetUserAsync(User);
-        var cardId = user.CardId;
+        var cardId = (await _cardService.GetByUserId(user.Id)).FirstOrDefault()!.Id; //TODO: rework
         dto.CardId = cardId;
         
         await _paymentService.Create(dto);
@@ -71,7 +71,7 @@ public class OperationsModel : PageModel
             return Forbid();
 
         var user = await _signInManager.UserManager.GetUserAsync(User);
-        var cardId = user.CardId;
+        var cardId = (await _cardService.GetByUserId(user.Id)).FirstOrDefault()!.Id; //TODO: rework
         dto.CardId = cardId;
         
         await _incomeService.Create(dto);

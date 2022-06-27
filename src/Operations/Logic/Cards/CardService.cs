@@ -1,6 +1,7 @@
 using Common.Exceptions;
 using Microsoft.EntityFrameworkCore;
 using Operations.Data;
+using Operations.Dtos;
 using Operations.Entities;
 
 namespace Operations.Logic.Cards;
@@ -24,9 +25,19 @@ public class CardService : ICardService
         return card;
     }
 
-    public async Task<Guid> Create()
+    public async Task<List<Card>> GetByUserId(string userId)
     {
-        var card = new Card(0);
+        var cards = await _context.Cards.Where(card => card.UserId == userId).ToListAsync();
+        
+        if (cards is null || cards.Count == 0)
+            throw new EntityNotFoundException();
+
+        return cards;
+    }
+
+    public async Task<Guid> Create(CreateCardDto dto)
+    {
+        var card = new Card(dto);
         _context.Cards.Add(card);
         await _context.SaveChangesAsync();
 

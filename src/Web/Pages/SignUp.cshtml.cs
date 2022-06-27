@@ -36,7 +36,7 @@ public class SignUpModel : PageModel
         if (user is not null)
         {
             await _signInManager.SignInAsync(user, true);
-            return RedirectToPage("Profile");
+            return RedirectToPage("CreateCard");
         }
         
         return Page();

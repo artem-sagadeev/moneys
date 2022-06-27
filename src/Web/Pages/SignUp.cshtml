@@ -5,24 +5,24 @@
     <form method="POST" id="signUpForm">
         <div class="mb-3">
             <label for="login" class="form-label">Login</label>
-            <input type="text" class="form-control input-dark" id="login" placeholder="Login" name="login" autocomplete="off" aria-describedby="loginMessage" required>
+            <input type="text" class="form-control input-dark" id="login" name="login" autocomplete="off" aria-describedby="loginMessage" required>
             <div id="loginMessage" class="invalid-feedback">
                 This login is already used
             </div>
         </div>
         <div class="mb-3">
             <label for="password" class="form-label">Password</label>
-            <input type="password" class="form-control input-dark" id="password" placeholder="Password" name="password" autocomplete="off" required>
+            <input type="password" class="form-control input-dark" id="password" name="password" autocomplete="off" required>
         </div>
         <div class="mb-3">
             <label for="password" class="form-label">Password</label>
-            <input type="password" class="form-control input-dark" id="repeatPassword" placeholder="Repeat password" autocomplete="off" aria-describedby="passwordMessage" required>
+            <input type="password" class="form-control input-dark" id="repeatPassword" autocomplete="off" aria-describedby="passwordMessage" required>
             <div id="repeatPasswordMessage" class="invalid-feedback">
                 Passwords doesn't match
             </div>
         </div>
         <div class="mb-3 form-check">
-            <input type="checkbox" class="form-check-input" id="check">
+            <input type="checkbox" class="form-check-input input-dark" id="check">
             <label class="form-check-label" for="check" name="remember">Check me out</label>
         </div>
         <button id="signUpButton" type="button" class="btn btn-dark">Submit</button>
