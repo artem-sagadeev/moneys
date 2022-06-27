@@ -11,4 +11,6 @@ public interface IAccountService
     public Task<User> SignUp(SignUpDto dto);
 
     public Task SignOut();
+
+    public Task<bool> IsLoginUnique(string login);
 }

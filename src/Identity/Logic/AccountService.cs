@@ -54,4 +54,13 @@ public class AccountService : IAccountService
     {
         await _signInManager.SignOutAsync();
     }
+
+    public async Task<bool> IsLoginUnique(string login)
+    {
+        var isNotUnique = await _context
+            .Users
+            .AnyAsync(user => user.UserName == login);
+
+        return !isNotUnique;
+    }
 }

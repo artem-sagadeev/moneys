@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Identity.Entities;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Operations.Dtos;
 using Operations.Entities;
@@ -14,34 +16,50 @@ public class OperationsModel : PageModel
     private readonly IPaymentService _paymentService;
     private readonly IIncomeService _incomeService;
     private readonly ICardService _cardService;
+    private readonly SignInManager<User> _signInManager;
 
-    public OperationsModel(IPaymentService paymentService, IIncomeService incomeService, ICardService cardService)
+    public OperationsModel(IPaymentService paymentService, IIncomeService incomeService, ICardService cardService, SignInManager<User> signInManager)
     {
         _paymentService = paymentService;
         _incomeService = incomeService;
         _cardService = cardService;
+        _signInManager = signInManager;
     }
     
     public List<IOperation> Operations { get; private set; }
     public Card Card { get; private set; }
-    public Guid CardId => Guid.Parse("0fcf5a3a-d616-43fd-8a27-844689b7b801");
 
-    public async Task OnGet()
+    public async Task<IActionResult> OnGet()
     {
-        Card = await _cardService.GetById(CardId);
+        if (!_signInManager.IsSignedIn(User))
+            return Forbid();
+
+        var user = await _signInManager.UserManager.GetUserAsync(User);
+        var cardId = user.CardId;
         
-        var payments = await _paymentService.GetByCardId(CardId);
-        var incomes = await _incomeService.GetByCardId(CardId);
+        Card = await _cardService.GetById(cardId);
+        
+        var payments = await _paymentService.GetByCardId(cardId);
+        var incomes = await _incomeService.GetByCardId(cardId);
 
         Operations = payments
             .Select(payment => (IOperation)payment)
             .Concat(incomes)
             .OrderByDescending(operation => operation.DateTime)
             .ToList();
+
+        return Page();
     }
 
     public async Task<IActionResult> OnPostPayment(CreatePaymentDto dto)
     {
+        if (!_signInManager.IsSignedIn(User))
+            return Forbid();
+
+        var user = await _signInManager.UserManager.GetUserAsync(User);
+        var cardId = user.CardId;
+        dto.CardId = cardId;
+        
         await _paymentService.Create(dto);
 
         return RedirectToPage();
@@ -49,6 +67,13 @@ public class OperationsModel : PageModel
 
     public async Task<IActionResult> OnPostIncome(CreateIncomeDto dto)
     {
+        if (!_signInManager.IsSignedIn(User))
+            return Forbid();
+
+        var user = await _signInManager.UserManager.GetUserAsync(User);
+        var cardId = user.CardId;
+        dto.CardId = cardId;
+        
         await _incomeService.Create(dto);
 
         return RedirectToPage();
