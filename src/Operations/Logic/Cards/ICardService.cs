@@ -5,7 +5,7 @@ namespace Operations.Logic.Cards;
 
 public interface ICardService
 {
-    public Task<Card> GetById(Guid id);
+    public Task<List<Card>> GetByIds(List<Guid> ids);
     
     public Task<List<Card>> GetByUserId(string userId);
 

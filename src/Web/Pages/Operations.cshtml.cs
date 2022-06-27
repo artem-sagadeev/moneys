@@ -29,7 +29,10 @@ public class OperationsModel : PageModel
     }
     
     public List<IOperation> Operations { get; private set; }
-    public Card Card { get; private set; }
+    
+    public List<Card> AllCards { get; private set; }
+    
+    public List<Card> CheckedCards { get; private set; }
 
     public async Task<IActionResult> OnGet()
     {
@@ -37,12 +40,37 @@ public class OperationsModel : PageModel
             return Redirect("SignIn");
 
         var user = await _signInManager.UserManager.GetUserAsync(User);
-        var cardId = (await _cardService.GetByUserId(user.Id)).FirstOrDefault()!.Id; //TODO: rework
         
-        Card = await _cardService.GetById(cardId);
+        AllCards = await _cardService.GetByUserId(user.Id);
+        CheckedCards = AllCards.OrderBy(card => card.Name).ToList();
         
-        var payments = await _paymentService.GetByCardId(cardId);
-        var incomes = await _incomeService.GetByCardId(cardId);
+        var payments = await _paymentService.GetByCardIds(CheckedCards.Select(card => card.Id).ToList());
+        var incomes = await _incomeService.GetByCardIds(CheckedCards.Select(card => card.Id).ToList());
+
+        Operations = payments
+            .Select(payment => (IOperation)payment)
+            .Concat(incomes)
+            .OrderByDescending(operation => operation.DateTime)
+            .ToList();
+
+        return Page();
+    }
+    
+    public async Task<IActionResult> OnPost(List<Guid> cardIds)
+    {
+        if (!_signInManager.IsSignedIn(User))
+            return Redirect("SignIn");
+
+        var user = await _signInManager.UserManager.GetUserAsync(User);
+        
+        AllCards = await _cardService.GetByUserId(user.Id);
+        CheckedCards = (await _cardService.GetByIds(cardIds)).OrderBy(card => card.Name).ToList();
+
+        if (CheckedCards.Any(card => card.UserId != user.Id))
+            return Forbid();
+        
+        var payments = await _paymentService.GetByCardIds(cardIds);
+        var incomes = await _incomeService.GetByCardIds(cardIds);
 
         Operations = payments
             .Select(payment => (IOperation)payment)
@@ -59,8 +87,9 @@ public class OperationsModel : PageModel
             return Redirect("SignIn");
 
         var user = await _signInManager.UserManager.GetUserAsync(User);
-        var cardId = (await _cardService.GetByUserId(user.Id)).FirstOrDefault()!.Id; //TODO: rework
-        dto.CardId = cardId;
+        var cardIds = (await _cardService.GetByUserId(user.Id)).Select(card => card.Id);
+        if (!cardIds.Contains(dto.CardId))
+            return Forbid();
         
         await _paymentService.Create(dto);
 
@@ -71,11 +100,12 @@ public class OperationsModel : PageModel
     {
         if (!_signInManager.IsSignedIn(User))
             return Redirect("SignIn");
-
-        var user = await _signInManager.UserManager.GetUserAsync(User);
-        var cardId = (await _cardService.GetByUserId(user.Id)).FirstOrDefault()!.Id; //TODO: rework
-        dto.CardId = cardId;
         
+        var user = await _signInManager.UserManager.GetUserAsync(User);
+        var cardIds = (await _cardService.GetByUserId(user.Id)).Select(card => card.Id);
+        if (!cardIds.Contains(dto.CardId))
+            return Forbid();
+
         await _incomeService.Create(dto);
 
         return RedirectToPage();
@@ -84,6 +114,8 @@ public class OperationsModel : PageModel
     public async Task<IActionResult> OnPostUpdatePayment(UpdatePaymentDto dto)
     {
         await _paymentService.Update(dto);
+        
+        //TODO: add checks
 
         return RedirectToPage();
     }
@@ -91,6 +123,8 @@ public class OperationsModel : PageModel
     public async Task<IActionResult> OnPostUpdateIncome(UpdateIncomeDto dto)
     {
         await _incomeService.Update(dto);
+        
+        //TODO: add checks
 
         return RedirectToPage();
     }
@@ -98,6 +132,8 @@ public class OperationsModel : PageModel
     public async Task<IActionResult> OnPostDeletePayment(Guid id)
     {
         await _paymentService.Delete(id);
+        
+        //TODO: add checks
 
         return RedirectToPage();
     }
@@ -105,6 +141,8 @@ public class OperationsModel : PageModel
     public async Task<IActionResult> OnPostDeleteIncome(Guid id)
     {
         await _incomeService.Delete(id);
+        
+        //TODO: add checks
 
         return RedirectToPage();
     }

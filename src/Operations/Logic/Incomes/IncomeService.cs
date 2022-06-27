@@ -30,6 +30,16 @@ public class IncomeService : IIncomeService
         return incomes;
     }
 
+    public async Task<List<Income>> GetByCardIds(List<Guid> cardIds)
+    {
+        var incomes = await _context
+            .Incomes
+            .Where(income => cardIds.Contains(income.CardId))
+            .ToListAsync();
+
+        return incomes;
+    }
+
     public async Task<Guid> Create(CreateIncomeDto dto)
     {
         var card = await _context.Cards.FindAsync(dto.CardId);

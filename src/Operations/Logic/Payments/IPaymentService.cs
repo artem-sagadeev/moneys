@@ -6,6 +6,8 @@ namespace Operations.Logic.Payments;
 public interface IPaymentService
 {
     public Task<List<Payment>> GetByCardId(Guid cardId);
+    
+    public Task<List<Payment>> GetByCardIds(List<Guid> cardIds);
 
     public Task<Guid> Create(CreatePaymentDto dto);
 

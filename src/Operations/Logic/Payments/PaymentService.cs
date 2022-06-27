@@ -30,6 +30,16 @@ public class PaymentService : IPaymentService
         return payments;
     }
 
+    public async Task<List<Payment>> GetByCardIds(List<Guid> cardIds)
+    {
+        var payments = await _context
+            .Payments
+            .Where(payment => cardIds.Contains(payment.CardId))
+            .ToListAsync();
+
+        return payments;
+    }
+
     public async Task<Guid> Create(CreatePaymentDto dto)
     {
         var card = await _context.Cards.FindAsync(dto.CardId);

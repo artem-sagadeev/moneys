@@ -2,7 +2,7 @@
 @using Operations.Entities
 @model Web.Pages.OperationsModel
 
-<div class="h4">Balance: @Model.Card.Balance ₽</div>
+<div class="h4">Sum: @Model.CheckedCards.Select(card => card.Balance).Sum() ₽</div>
 <div class="row g-2 row-cols-auto">
     <div class="col">
         <!-- Button trigger modal -->
@@ -15,6 +15,34 @@
         <button type="button" class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#addIncomeModal">
             Add Income
         </button>
+    </div>
+    <div class="dropdown col-4">
+        <button class="btn btn-dark dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" id="dropdownMenuClickableInside" data-bs-auto-close="outside">
+            Select cards
+        </button>
+        <div class="dropdown-menu">
+            <form class="px-2 py-2" method="POST">
+                @foreach (var card in Model.AllCards)
+                {
+                    <div class="mb-1">
+                        <div class="form-check form-check-inline">
+                            @if (Model.CheckedCards.Contains(card))
+                            {
+                                <input type="checkbox" class="form-check-input checkbox-dark" id="card" name="cardIds" value="@card.Id" checked>
+                            }
+                            else
+                            {
+                                <input type="checkbox" class="form-check-input checkbox-dark" id="card" name="cardIds" value="@card.Id">
+                            }
+                            <label class="form-check-label" for="card">
+                                @card.Name, balance: @card.Balance
+                            </label>
+                        </div>
+                    </div>
+                }
+                <button type="submit" class="btn btn-dark">Load</button>
+            </form>
+        </div>
     </div>
 </div>
 
@@ -83,6 +111,27 @@
                         <label for="paymentAmountLabel" class="form-label">Amount</label>
                         <input type="number" class="form-control input-dark" id="paymentAmountLabel" name="amount" autocomplete="off">
                     </div>
+                    
+                    <div class="dropdown mb-3">
+                        @* ReSharper disable once Html.IdDuplication *@
+                        <button class="btn btn-outline-dark dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" id="dropdownMenuClickableInside" data-bs-auto-close="outside">
+                            Select cards
+                        </button>
+                        <div class="dropdown-menu p-2">
+                                @foreach (var card in Model.AllCards)
+                                {
+                                    <div class="mb-1">
+                                        <div class="form-check form-check-inline">
+                                            <input type="radio" class="form-check-input checkbox-dark" id="card" name="cardId" value="@card.Id">
+                                            <label class="form-check-label" for="card">
+                                                @card.Name, balance: @card.Balance
+                                            </label>
+                                        </div>
+                                    </div>
+                                }
+                        </div>
+                    </div>
+
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
@@ -111,6 +160,27 @@
                         <label for="incomeAmountLabel" class="form-label">Amount</label>
                         <input type="number" class="form-control input-dark" id="incomeAmountLabel" name="amount" autocomplete="off">
                     </div>
+                    
+                    <div class="dropdown mb-3">
+                        @* ReSharper disable once Html.IdDuplication *@
+                        <button class="btn btn-outline-dark dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" id="dropdownMenuClickableInside" data-bs-auto-close="outside">
+                            Select cards
+                        </button>
+                        <div class="dropdown-menu p-2">
+                            @foreach (var card in Model.AllCards)
+                            {
+                                <div class="mb-1">
+                                    <div class="form-check form-check-inline">
+                                        <input type="radio" class="form-check-input checkbox-dark" id="card" name="cardId" value="@card.Id">
+                                        <label class="form-check-label" for="card">
+                                            @card.Name, balance: @card.Balance
+                                        </label>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>

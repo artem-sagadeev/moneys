@@ -15,14 +15,14 @@ public class CardService : ICardService
         _context = context;
     }
 
-    public async Task<Card> GetById(Guid id)
+    public async Task<List<Card>> GetByIds(List<Guid> ids)
     {
-        var card = await _context.Cards.FindAsync(id);
+        var cards = await _context.Cards.Where(card => ids.Contains(card.Id)).ToListAsync();
 
-        if (card is null)
+        if (ids.Count != cards.Count)
             throw new EntityNotFoundException();
 
-        return card;
+        return cards;
     }
 
     public async Task<List<Card>> GetByUserId(string userId)
