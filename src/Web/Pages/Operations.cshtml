@@ -2,7 +2,7 @@
 @using Operations.Entities
 @model Web.Pages.OperationsModel
 
-<div class="h4">Balance: @Model.Card.Balance ₽</div>
+<div class="h4">Sum: @Model.CheckedCards.Select(card => card.Balance).Sum() ₽</div>
 <div class="row g-2 row-cols-auto">
     <div class="col">
         <!-- Button trigger modal -->
@@ -15,6 +15,34 @@
         <button type="button" class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#addIncomeModal">
             Add Income
         </button>
+    </div>
+    <div class="dropdown col-4">
+        <button class="btn btn-dark dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" id="dropdownMenuClickableInside" data-bs-auto-close="outside">
+            Select cards
+        </button>
+        <div class="dropdown-menu">
+            <form class="px-2 py-2" method="POST">
+                @foreach (var card in Model.AllCards)
+                {
+                    <div class="mb-1">
+                        <div class="form-check form-check-inline">
+                            @if (Model.CheckedCards.Contains(card))
+                            {
+                                <input type="checkbox" class="form-check-input checkbox-dark" id="card" name="cardIds" value="@card.Id" checked>
+                            }
+                            else
+                            {
+                                <input type="checkbox" class="form-check-input checkbox-dark" id="card" name="cardIds" value="@card.Id">
+                            }
+                            <label class="form-check-label" for="card">
+                                @card.Name, balance: @card.Balance
+                            </label>
+                        </div>
+                    </div>
+                }
+                <button type="submit" class="btn btn-dark">Load</button>
+            </form>
+        </div>
     </div>
 </div>
 
@@ -40,36 +68,11 @@
                 <td class="col-2">@payment.Amount ₽</td>
                 <td class="col-3">
                     <form method="POST">
-                        <button type="button" class="btn-link" data-bs-toggle="modal" data-bs-target="#updatePaymentModal">Update</button>
+                        <button type="button" class="btn-link" onclick="updatePayment('@payment.Name', '@payment.Id')" data-bs-toggle="modal" data-bs-target="#updatePaymentModal">Update</button>
                         <button type="submit" class="btn-link" asp-page-handler="DeletePayment" asp-route-id="@payment.Id">Delete</button>
                     </form>
                 </td>
             </tr>
-            
-            <!-- Modal -->
-            <div class="modal fade" id="updatePaymentModal" tabindex="-1" aria-labelledby="updatePaymentModalLabel" aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <form method="POST" asp-page-handler="UpdatePayment">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="updatePaymentModalLabel">Update Payment</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body">
-                                <div class="mb-3">
-                                    <label for="updatingPaymentNameLabel" class="form-label">Name</label>
-                                    <input type="text" class="form-control input-dark" id="updatingPaymentNameLabel" name="name" autocomplete="off" value="@payment.Name">
-                                </div>
-                                <input type="hidden" name="id" value="@payment.Id"/>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                                <button type="submit" class="btn btn-dark">Save</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
         }
         else if (operation is Income income)
         {
@@ -80,42 +83,17 @@
                 <td class="col-2">@income.Amount ₽</td>
                 <td class="col-3">
                     <form method="POST">
-                        <button type="button" class="btn-link" data-bs-toggle="modal" data-bs-target="#updateIncomeModal">Update</button>
+                        <button type="button" class="btn-link" onclick="updateIncome('@income.Name', '@income.Id')" data-bs-toggle="modal" data-bs-target="#updateIncomeModal">Update</button>
                         <button type="submit" class="btn-link" asp-page-handler="DeleteIncome" asp-route-id="@income.Id">Delete</button>
                     </form>
                 </td>
             </tr>
-            
-            <!-- Modal -->
-            <div class="modal fade" id="updateIncomeModal" tabindex="-1" aria-labelledby="updateIncomeModalLabel" aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <form method="POST" asp-page-handler="UpdateIncome">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="updateIncomeModalLabel">Update Income</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body">
-                                <div class="mb-3">
-                                    <label for="updatingIncomeNameLabel" class="form-label">Name</label>
-                                    <input type="text" class="form-control input-dark" id="updatingIncomeNameLabel" name="name" autocomplete="off" value="@income.Name">
-                                </div>
-                                <input type="hidden" name="id" value="@income.Id"/>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                                <button type="submit" class="btn btn-dark">Save</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
         }
     }
     </tbody>
 </table>
 
-<!-- Modal -->
+<!-- Add Payment Modal -->
 <div class="modal fade" id="addPaymentModal" tabindex="-1" aria-labelledby="addPaymentModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -133,6 +111,27 @@
                         <label for="paymentAmountLabel" class="form-label">Amount</label>
                         <input type="number" class="form-control input-dark" id="paymentAmountLabel" name="amount" autocomplete="off">
                     </div>
+                    
+                    <div class="dropdown mb-3">
+                        @* ReSharper disable once Html.IdDuplication *@
+                        <button class="btn btn-outline-dark dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" id="dropdownMenuClickableInside" data-bs-auto-close="outside">
+                            Select cards
+                        </button>
+                        <div class="dropdown-menu p-2">
+                                @foreach (var card in Model.AllCards)
+                                {
+                                    <div class="mb-1">
+                                        <div class="form-check form-check-inline">
+                                            <input type="radio" class="form-check-input checkbox-dark" id="card" name="cardId" value="@card.Id">
+                                            <label class="form-check-label" for="card">
+                                                @card.Name, balance: @card.Balance
+                                            </label>
+                                        </div>
+                                    </div>
+                                }
+                        </div>
+                    </div>
+
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
@@ -143,7 +142,7 @@
     </div>
 </div>
 
-<!-- Modal -->
+<!-- Add Income Modal -->
 <div class="modal fade" id="addIncomeModal" tabindex="-1" aria-labelledby="addIncomeModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -161,6 +160,27 @@
                         <label for="incomeAmountLabel" class="form-label">Amount</label>
                         <input type="number" class="form-control input-dark" id="incomeAmountLabel" name="amount" autocomplete="off">
                     </div>
+                    
+                    <div class="dropdown mb-3">
+                        @* ReSharper disable once Html.IdDuplication *@
+                        <button class="btn btn-outline-dark dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" id="dropdownMenuClickableInside" data-bs-auto-close="outside">
+                            Select cards
+                        </button>
+                        <div class="dropdown-menu p-2">
+                            @foreach (var card in Model.AllCards)
+                            {
+                                <div class="mb-1">
+                                    <div class="form-check form-check-inline">
+                                        <input type="radio" class="form-check-input checkbox-dark" id="card" name="cardId" value="@card.Id">
+                                        <label class="form-check-label" for="card">
+                                            @card.Name, balance: @card.Balance
+                                        </label>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
@@ -170,3 +190,65 @@
         </div>
     </div>
 </div>
+
+<!-- Update Payment Modal -->
+<div class="modal fade" id="updatePaymentModal" tabindex="-1" aria-labelledby="updatePaymentModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="POST" asp-page-handler="UpdatePayment">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="updatePaymentModalLabel">Update Payment</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="updatePaymentName" class="form-label">Name</label>
+                        <input type="text" class="form-control input-dark" id="updatePaymentName" name="name" autocomplete="off">
+                    </div>
+                    <input type="hidden" name="id" id="updatePaymentId"/>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-dark">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Update Income Modal -->
+<div class="modal fade" id="updateIncomeModal" tabindex="-1" aria-labelledby="updateIncomeModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="POST" asp-page-handler="UpdateIncome">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="updateIncomeModalLabel">Update Income</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="updateIncomeName" class="form-label">Name</label>
+                        <input type="text" class="form-control input-dark" id="updateIncomeName" name="name" autocomplete="off">
+                    </div>
+                    <input type="hidden" name="id" id="updateIncomeId"/>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-dark">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+let updateIncome = function (incomeName, incomeId) {
+    document.getElementById("updateIncomeName").value = incomeName;
+    document.getElementById("updateIncomeId").value = incomeId;
+}
+
+let updatePayment = function (paymentName, paymentId) {
+    document.getElementById("updatePaymentName").value = paymentName;
+    document.getElementById("updatePaymentId").value = paymentId;
+}
+</script>

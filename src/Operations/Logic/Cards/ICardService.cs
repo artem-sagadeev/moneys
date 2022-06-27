@@ -5,11 +5,13 @@ namespace Operations.Logic.Cards;
 
 public interface ICardService
 {
-    public Task<Card> GetById(Guid id);
+    public Task<List<Card>> GetByIds(List<Guid> ids);
     
     public Task<List<Card>> GetByUserId(string userId);
 
     public Task<Guid> Create(CreateCardDto dto);
+
+    public Task Update(UpdateCardDto dto);
 
     public Task Delete(Guid id);
 }
