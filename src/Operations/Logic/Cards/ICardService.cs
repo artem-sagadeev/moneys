@@ -11,5 +11,7 @@ public interface ICardService
 
     public Task<Guid> Create(CreateCardDto dto);
 
+    public Task Update(UpdateCardDto dto);
+
     public Task Delete(Guid id);
 }

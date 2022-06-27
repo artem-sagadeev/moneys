@@ -1,4 +1,5 @@
 ﻿using Identity.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -11,6 +12,7 @@ using Operations.Logic.Payments;
 
 namespace Web.Pages;
 
+[Authorize]
 public class OperationsModel : PageModel
 {
     private readonly IPaymentService _paymentService;
@@ -32,7 +34,7 @@ public class OperationsModel : PageModel
     public async Task<IActionResult> OnGet()
     {
         if (!_signInManager.IsSignedIn(User))
-            return Forbid();
+            return Redirect("SignIn");
 
         var user = await _signInManager.UserManager.GetUserAsync(User);
         var cardId = (await _cardService.GetByUserId(user.Id)).FirstOrDefault()!.Id; //TODO: rework
@@ -54,7 +56,7 @@ public class OperationsModel : PageModel
     public async Task<IActionResult> OnPostPayment(CreatePaymentDto dto)
     {
         if (!_signInManager.IsSignedIn(User))
-            return Forbid();
+            return Redirect("SignIn");
 
         var user = await _signInManager.UserManager.GetUserAsync(User);
         var cardId = (await _cardService.GetByUserId(user.Id)).FirstOrDefault()!.Id; //TODO: rework
@@ -68,7 +70,7 @@ public class OperationsModel : PageModel
     public async Task<IActionResult> OnPostIncome(CreateIncomeDto dto)
     {
         if (!_signInManager.IsSignedIn(User))
-            return Forbid();
+            return Redirect("SignIn");
 
         var user = await _signInManager.UserManager.GetUserAsync(User);
         var cardId = (await _cardService.GetByUserId(user.Id)).FirstOrDefault()!.Id; //TODO: rework

@@ -28,9 +28,6 @@ public class CardService : ICardService
     public async Task<List<Card>> GetByUserId(string userId)
     {
         var cards = await _context.Cards.Where(card => card.UserId == userId).ToListAsync();
-        
-        if (cards is null || cards.Count == 0)
-            throw new EntityNotFoundException();
 
         return cards;
     }
@@ -44,16 +41,31 @@ public class CardService : ICardService
         return card.Id;
     }
 
+    public async Task Update(UpdateCardDto dto)
+    {
+        var card = await _context
+            .Cards
+            .Include(card => card.Payments)
+            .SingleOrDefaultAsync(card => card.Id == dto.Id);
+
+        if (card is null)
+            throw new EntityNotFoundException();
+
+        card.Name = dto.Name;
+        await _context.SaveChangesAsync();
+    }
+
     public async Task Delete(Guid id)
     {
         var card = await _context
             .Cards
             .Include(card => card.Payments)
+            .Include(card => card.Incomes)
             .SingleOrDefaultAsync(card => card.Id == id);
 
         if (card is null)
             throw new EntityNotFoundException();
-
+        
         _context.Payments.RemoveRange(card.Payments);
         _context.Incomes.RemoveRange(card.Incomes);
         _context.Cards.Remove(card);
