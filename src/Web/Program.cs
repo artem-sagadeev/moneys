@@ -1,3 +1,4 @@
+using ApplicationServices;
 using Identity.Data;
 using Identity.Entities;
 using Identity.Logic;
@@ -33,6 +34,8 @@ builder.Services.AddDbContext<IdentityContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("Heroku"), npgsqlOptions => 
         npgsqlOptions.MigrationsAssembly("Identity"));
 });
+
+builder.Services.AddScoped<IOperationsService, OperationsService>();
 
 var app = builder.Build();
 

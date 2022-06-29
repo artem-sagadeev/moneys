@@ -1,6 +1,10 @@
 ﻿@page
 @model Web.Pages.ProfileModel
 
+@{
+    ViewData["Title"] = "Profile";
+}
+
 <div class="p-2">
     <div class="h4">User: @Model.Profile.UserName</div>
     <hr/>
@@ -12,7 +16,7 @@
         </button>
     </div>
 </div>
-<div class="d-flex">
+<div class="d-flex flex-wrap">
     @foreach (var card in Model.Cards)
     {
         <div class="p-2">
