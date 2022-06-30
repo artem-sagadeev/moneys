@@ -15,6 +15,13 @@ public class PaymentService : IPaymentService
         _context = context;
     }
 
+    public async Task<Payment> Get(Guid id)
+    {
+        var payment = await _context.Payments.FindAsync(id);
+
+        return payment;
+    }
+
     public async Task<List<Payment>> GetByCardId(Guid cardId)
     {
         var card = await _context.Cards.FindAsync(cardId);

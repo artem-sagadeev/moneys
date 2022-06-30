@@ -15,6 +15,13 @@ public class IncomeService : IIncomeService
         _context = context;
     }
 
+    public async Task<Income> Get(Guid id)
+    {
+        var income = await _context.Incomes.FindAsync(id);
+
+        return income;
+    }
+
     public async Task<List<Income>> GetByCardId(Guid cardId)
     {
         var card = await _context.Cards.FindAsync(cardId);

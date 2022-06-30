@@ -1,9 +1,10 @@
+using Common.Interfaces;
 using Operations.Dtos;
 using Operations.Interfaces;
 
 namespace Operations.Entities;
 
-public class Payment : IOperation
+public class Payment : IOperation, IEntity
 {
     public Guid Id { get; set; }
     

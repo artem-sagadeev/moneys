@@ -1,4 +1,5 @@
 ﻿using ApplicationServices;
+using ApplicationServices.Operations;
 using Identity.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -17,17 +18,9 @@ namespace Web.Pages;
 public class OperationsModel : PageModel
 {
     private readonly IOperationsService _operationsService;
-    private readonly IPaymentService _paymentService;
-    private readonly IIncomeService _incomeService;
-    private readonly ICardService _cardService;
-    private readonly SignInManager<User> _signInManager;
 
-    public OperationsModel(IPaymentService paymentService, IIncomeService incomeService, ICardService cardService, SignInManager<User> signInManager, IOperationsService operationsService)
+    public OperationsModel(IOperationsService operationsService)
     {
-        _paymentService = paymentService;
-        _incomeService = incomeService;
-        _cardService = cardService;
-        _signInManager = signInManager;
         _operationsService = operationsService;
     }
 
@@ -71,66 +64,42 @@ public class OperationsModel : PageModel
 
     public async Task<IActionResult> OnPostPayment(CreatePaymentDto dto)
     {
-        if (!_signInManager.IsSignedIn(User))
-            return Redirect("SignIn");
-
-        var user = await _signInManager.UserManager.GetUserAsync(User);
-        var cardIds = (await _cardService.GetByUserId(user.Id)).Select(card => card.Id);
-        if (!cardIds.Contains(dto.CardId))
-            return Forbid();
-        
-        await _paymentService.Create(dto);
+        await _operationsService.CreatePayment(User, dto);
 
         return RedirectToPage();
     }
 
     public async Task<IActionResult> OnPostIncome(CreateIncomeDto dto)
     {
-        if (!_signInManager.IsSignedIn(User))
-            return Redirect("SignIn");
-        
-        var user = await _signInManager.UserManager.GetUserAsync(User);
-        var cardIds = (await _cardService.GetByUserId(user.Id)).Select(card => card.Id);
-        if (!cardIds.Contains(dto.CardId))
-            return Forbid();
-
-        await _incomeService.Create(dto);
+        await _operationsService.CreateIncome(User, dto);
 
         return RedirectToPage();
     }
     
     public async Task<IActionResult> OnPostUpdatePayment(UpdatePaymentDto dto)
     {
-        await _paymentService.Update(dto);
-        
-        //TODO: add checks
+        await _operationsService.UpdatePayment(User, dto);
 
         return RedirectToPage();
     }
     
     public async Task<IActionResult> OnPostUpdateIncome(UpdateIncomeDto dto)
     {
-        await _incomeService.Update(dto);
-        
-        //TODO: add checks
+        await _operationsService.UpdateIncome(User, dto);
 
         return RedirectToPage();
     }
     
     public async Task<IActionResult> OnPostDeletePayment(Guid id)
     {
-        await _paymentService.Delete(id);
-        
-        //TODO: add checks
+        await _operationsService.DeletePayment(User, id);
 
         return RedirectToPage();
     }
 
     public async Task<IActionResult> OnPostDeleteIncome(Guid id)
     {
-        await _incomeService.Delete(id);
-        
-        //TODO: add checks
+        await _operationsService.DeleteIncome(User, id);
 
         return RedirectToPage();
     }
