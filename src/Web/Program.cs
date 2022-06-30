@@ -1,4 +1,4 @@
-using ApplicationServices;
+using ApplicationServices.Identity;
 using ApplicationServices.Operations;
 using Identity.Data;
 using Identity.Entities;
@@ -37,6 +37,7 @@ builder.Services.AddDbContext<IdentityContext>(options =>
 });
 
 builder.Services.AddScoped<IOperationsService, OperationsService>();
+builder.Services.AddScoped<IIdentityService, IdentityService>();
 
 var app = builder.Build();
 
@@ -56,6 +57,6 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.MapRazorPages();
+app.MapRazorPages().RequireAuthorization();
 
 app.Run();

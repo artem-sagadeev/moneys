@@ -118,6 +118,30 @@ public class OperationsService : IOperationsService
         await _incomeService.Delete(incomeId);
     }
 
+    public async Task CreateCard(ClaimsPrincipal user, CreateCardDto dto)
+    {
+        var currentUser = await _userManager.GetUserAsync(user);
+        dto.UserId = currentUser.Id;
+
+        await _cardService.Create(dto);
+    }
+
+    public async Task UpdateCard(ClaimsPrincipal user, UpdateCardDto dto)
+    {
+        if (!await HasUserAccessToCard(user, dto.Id))
+            throw new NoAccessException();
+
+        await _cardService.Update(dto);
+    }
+
+    public async Task DeleteCard(ClaimsPrincipal user, Guid cardId)
+    {
+        if (!await HasUserAccessToCard(user, cardId))
+            throw new NoAccessException();
+
+        await _cardService.Delete(cardId);
+    }
+
     private async Task<bool> HasUserAccessToCard(ClaimsPrincipal user, Guid cardId)
     {
         var currentUser = await _userManager.GetUserAsync(user);

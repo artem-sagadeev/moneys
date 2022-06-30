@@ -1,12 +1,14 @@
 ﻿using Identity.Dtos;
 using Identity.Entities;
 using Identity.Logic;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace Web.Pages;
 
+[AllowAnonymous]
 public class SignUpModel : PageModel
 {
     

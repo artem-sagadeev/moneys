@@ -1,24 +1,24 @@
-﻿using Identity.Entities;
+﻿using ApplicationServices.Identity;
+using ApplicationServices.Operations;
+using Identity.Entities;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Operations.Dtos;
 using Operations.Entities;
-using Operations.Logic.Cards;
 
 namespace Web.Pages;
 
 [Authorize]
 public class ProfileModel : PageModel
 {
-    private readonly SignInManager<User> _signInManager;
-    private readonly ICardService _cardService;
+    private readonly IIdentityService _identityService;
+    private readonly IOperationsService _operationsService;
 
-    public ProfileModel(SignInManager<User> signInManager, ICardService cardService)
+    public ProfileModel(IIdentityService identityService, IOperationsService operationsService)
     {
-        _signInManager = signInManager;
-        _cardService = cardService;
+        _identityService = identityService;
+        _operationsService = operationsService;
     }
 
     public User Profile { get; set; }
@@ -27,40 +27,32 @@ public class ProfileModel : PageModel
 
     public async Task<IActionResult> OnGet()
     {
-        if (!_signInManager.IsSignedIn(User))
-            return Redirect("SignIn");
-
-        var user = await _signInManager.UserManager.GetUserAsync(User);
+        var user = await _identityService.GetUser(User);
+        var cards = await _operationsService.GetAllUserCards(User);
+        
         Profile = user;
-        Cards = await _cardService.GetByUserId(user.Id);
+        Cards = cards.OrderBy(card => card.Name).ToList();
+        
         return Page();
     }
 
     public async Task<IActionResult> OnPostAddCard(CreateCardDto dto)
     {
-        if (!_signInManager.IsSignedIn(User))
-            return Redirect("SignIn");
-
-        var user = await _signInManager.UserManager.GetUserAsync(User);
-        dto.UserId = user.Id;
-        await _cardService.Create(dto);
+        await _operationsService.CreateCard(User, dto);
 
         return RedirectToPage();
     }
     
     public async Task<IActionResult> OnPostUpdateCard(UpdateCardDto dto)
     {
-        if (!_signInManager.IsSignedIn(User))
-            return Redirect("SignIn");
-
-        await _cardService.Update(dto);
+        await _operationsService.UpdateCard(User, dto);
 
         return RedirectToPage();
     }
     
     public async Task<IActionResult> OnPostDeleteCard(Guid id)
     {
-        await _cardService.Delete(id);
+        await _operationsService.DeleteCard(User, id);
 
         return RedirectToPage();
     }

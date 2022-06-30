@@ -24,4 +24,10 @@ public interface IOperationsService
     public Task DeletePayment(ClaimsPrincipal user, Guid paymentId);
     
     public Task DeleteIncome(ClaimsPrincipal user, Guid incomeId);
+
+    public Task CreateCard(ClaimsPrincipal user, CreateCardDto dto);
+
+    public Task UpdateCard(ClaimsPrincipal user, UpdateCardDto dto);
+
+    public Task DeleteCard(ClaimsPrincipal user, Guid cardId);
 }
