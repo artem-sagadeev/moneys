@@ -1,21 +1,19 @@
 ﻿using ApplicationServices.Identity;
 using ApplicationServices.Operations;
 using Identity.Entities;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Operations.Dtos;
 using Operations.Entities;
 
-namespace Web.Pages;
+namespace Web.Pages.Account;
 
-[Authorize]
-public class ProfileModel : PageModel
+public class IndexModel : PageModel
 {
     private readonly IIdentityService _identityService;
     private readonly IOperationsService _operationsService;
 
-    public ProfileModel(IIdentityService identityService, IOperationsService operationsService)
+    public IndexModel(IIdentityService identityService, IOperationsService operationsService)
     {
         _identityService = identityService;
         _operationsService = operationsService;
