@@ -213,6 +213,25 @@
                         <label for="updatePaymentName" class="form-label">Name</label>
                         <input type="text" class="form-control input-dark" id="updatePaymentName" name="name" autocomplete="off">
                     </div>
+                    <div class="dropdown mb-3">
+                        @* ReSharper disable once Html.IdDuplication *@
+                        <button class="btn btn-outline-dark dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" id="dropdownMenuClickableInside" data-bs-auto-close="outside">
+                            Select cards
+                        </button>
+                        <div class="dropdown-menu p-2">
+                            @foreach (var card in Model.AllCards)
+                            {
+                                <div class="mb-1">
+                                    <div class="form-check form-check-inline">
+                                        <input type="radio" class="form-check-input checkbox-dark" id="card" name="cardId" value="@card.Id">
+                                        <label class="form-check-label" for="card">
+                                            @card.Name, balance: @card.Balance
+                                        </label>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
                     <input type="hidden" name="id" id="updatePaymentId"/>
                 </div>
                 <div class="modal-footer">
@@ -237,6 +256,25 @@
                     <div class="mb-3">
                         <label for="updateIncomeName" class="form-label">Name</label>
                         <input type="text" class="form-control input-dark" id="updateIncomeName" name="name" autocomplete="off">
+                    </div>
+                    <div class="dropdown mb-3">
+                        @* ReSharper disable once Html.IdDuplication *@
+                        <button class="btn btn-outline-dark dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" id="dropdownMenuClickableInside" data-bs-auto-close="outside">
+                            Select cards
+                        </button>
+                        <div class="dropdown-menu p-2">
+                            @foreach (var card in Model.AllCards)
+                            {
+                                <div class="mb-1">
+                                    <div class="form-check form-check-inline">
+                                        <input type="radio" class="form-check-input checkbox-dark" id="card" name="cardId" value="@card.Id">
+                                        <label class="form-check-label" for="card">
+                                            @card.Name, balance: @card.Balance
+                                        </label>
+                                    </div>
+                                </div>
+                            }
+                        </div>
                     </div>
                     <input type="hidden" name="id" id="updateIncomeId"/>
                 </div>

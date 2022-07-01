@@ -1,4 +1,5 @@
 using Common.Exceptions;
+using Common.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Operations.Data;
 using Operations.Dtos;
@@ -17,17 +18,14 @@ public class PaymentService : IPaymentService
 
     public async Task<Payment> Get(Guid id)
     {
-        var payment = await _context.Payments.FindAsync(id);
+        var payment = await _context.Payments.GetById(id);
 
         return payment;
     }
 
     public async Task<List<Payment>> GetByCardId(Guid cardId)
     {
-        var card = await _context.Cards.FindAsync(cardId);
-
-        if (card is null)
-            throw new EntityNotFoundException();
+        await _context.Cards.CheckIfExists(cardId);
 
         var payments = await _context
             .Payments
@@ -49,10 +47,7 @@ public class PaymentService : IPaymentService
 
     public async Task<Guid> Create(CreatePaymentDto dto)
     {
-        var card = await _context.Cards.FindAsync(dto.CardId);
-
-        if (card is null)
-            throw new EntityNotFoundException();
+        var card = await _context.Cards.GetById(dto.CardId);
 
         if (dto.Amount > card.Balance)
             throw new NotEnoughMoneyException();
@@ -67,10 +62,20 @@ public class PaymentService : IPaymentService
 
     public async Task Update(UpdatePaymentDto dto)
     {
-        var payment = await _context.Payments.FindAsync(dto.Id);
+        var payment = await _context.Payments.GetById(dto.Id);
 
-        if (payment is null)
-            throw new EntityNotFoundException();
+        if (dto.CardId != payment.CardId)
+        {
+            var currentCard = await _context.Cards.GetById(payment.CardId);
+            var newCard = await _context.Cards.GetById(dto.CardId);
+
+            if (newCard.Balance < payment.Amount)
+                throw new NotEnoughMoneyException();
+            
+            payment.CardId = dto.CardId;
+            currentCard.Balance += payment.Amount;
+            newCard.Balance -= payment.Amount;
+        }
 
         payment.Name = dto.Name;
         await _context.SaveChangesAsync();

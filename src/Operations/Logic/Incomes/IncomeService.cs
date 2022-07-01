@@ -1,4 +1,5 @@
 using Common.Exceptions;
+using Common.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Operations.Data;
 using Operations.Dtos;
@@ -17,17 +18,14 @@ public class IncomeService : IIncomeService
 
     public async Task<Income> Get(Guid id)
     {
-        var income = await _context.Incomes.FindAsync(id);
+        var income = await _context.Incomes.GetById(id);
 
         return income;
     }
 
     public async Task<List<Income>> GetByCardId(Guid cardId)
     {
-        var card = await _context.Cards.FindAsync(cardId);
-
-        if (card is null)
-            throw new EntityNotFoundException();
+        await _context.Cards.CheckIfExists(cardId);
 
         var incomes = await _context
             .Incomes
@@ -49,10 +47,7 @@ public class IncomeService : IIncomeService
 
     public async Task<Guid> Create(CreateIncomeDto dto)
     {
-        var card = await _context.Cards.FindAsync(dto.CardId);
-
-        if (card is null)
-            throw new EntityNotFoundException();
+        var card = await _context.Cards.GetById(dto.CardId);
 
         var income = new Income(dto);
         _context.Incomes.Add(income);
@@ -64,10 +59,20 @@ public class IncomeService : IIncomeService
 
     public async Task Update(UpdateIncomeDto dto)
     {
-        var income = await _context.Incomes.FindAsync(dto.Id);
+        var income = await _context.Incomes.GetById(dto.Id);
 
-        if (income is null)
-            throw new EntityNotFoundException();
+        if (dto.CardId != income.CardId)
+        {
+            var currentCard = await _context.Cards.GetById(income.CardId);
+            var newCard = await _context.Cards.GetById(dto.CardId);
+
+            if (currentCard.Balance < income.Amount)
+                throw new NotEnoughMoneyException();
+            
+            income.CardId = dto.CardId;
+            currentCard.Balance -= income.Amount;
+            newCard.Balance += income.Amount;
+        }
 
         income.Name = dto.Name;
         await _context.SaveChangesAsync();
