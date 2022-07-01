@@ -36,7 +36,7 @@ public class RegisterModel : PageModel
         var user = await _accountService.SignUp(dto);
         if (user is not null)
         {
-            await _signInManager.SignInAsync(user, true);
+            await _signInManager.SignInAsync(user, dto.IsPersistent);
             return RedirectToPage("/Account/Index");
         }
         
