@@ -11,6 +11,9 @@ using Operations.Logic.Incomes;
 using Operations.Logic.Payments;
 
 var builder = WebApplication.CreateBuilder(args);
+var connectionString = builder.Environment.EnvironmentName == "Development"
+    ? builder.Configuration.GetConnectionString("Local")
+    : builder.Configuration.GetConnectionString("Heroku");
 
 // Add services to the container.
 builder.Services.AddRazorPages();
@@ -20,7 +23,7 @@ builder.Services.AddScoped<IPaymentService, PaymentService>();
 builder.Services.AddScoped<ICardService, CardService>();
 builder.Services.AddDbContext<OperationsContext>(options =>
 {
-    options.UseNpgsql(builder.Configuration.GetConnectionString("Local"), npgsqlOptions => 
+    options.UseNpgsql(connectionString, npgsqlOptions => 
         npgsqlOptions.MigrationsAssembly("Operations"));
 });
 
@@ -32,7 +35,7 @@ builder.Services.AddIdentity<User, IdentityRole>(options =>
 }).AddEntityFrameworkStores<IdentityContext>();
 builder.Services.AddDbContext<IdentityContext>(options =>
 {
-    options.UseNpgsql(builder.Configuration.GetConnectionString("Local"), npgsqlOptions => 
+    options.UseNpgsql(connectionString, npgsqlOptions => 
         npgsqlOptions.MigrationsAssembly("Identity"));
 });
 
