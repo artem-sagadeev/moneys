@@ -1,4 +1,6 @@
-﻿using Identity.Entities;
+﻿using ApplicationServices;
+using ApplicationServices.Operations;
+using Identity.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -15,134 +17,89 @@ namespace Web.Pages;
 [Authorize]
 public class OperationsModel : PageModel
 {
-    private readonly IPaymentService _paymentService;
-    private readonly IIncomeService _incomeService;
-    private readonly ICardService _cardService;
-    private readonly SignInManager<User> _signInManager;
+    private readonly IOperationsService _operationsService;
 
-    public OperationsModel(IPaymentService paymentService, IIncomeService incomeService, ICardService cardService, SignInManager<User> signInManager)
+    public OperationsModel(IOperationsService operationsService)
     {
-        _paymentService = paymentService;
-        _incomeService = incomeService;
-        _cardService = cardService;
-        _signInManager = signInManager;
+        _operationsService = operationsService;
     }
-    
-    public List<IOperation> Operations { get; private set; }
-    
+
     public List<Card> AllCards { get; private set; }
     
-    public List<Card> CheckedCards { get; private set; }
+    public List<Guid> CheckedCardIds { get; private set; }
+    
+    public Dictionary<Guid, string> CardNames { get; set; }
+    
+    public int Sum { get; set; }
+    
+    public List<IOperation> Operations { get; private set; }
 
     public async Task<IActionResult> OnGet()
     {
-        if (!_signInManager.IsSignedIn(User))
-            return Redirect("SignIn");
+        var userCards = await _operationsService.GetAllUserCards(User);
+        var operations = await _operationsService.GetAllUserOperations(User);
 
-        var user = await _signInManager.UserManager.GetUserAsync(User);
-        
-        AllCards = await _cardService.GetByUserId(user.Id);
-        CheckedCards = AllCards.OrderBy(card => card.Name).ToList();
-        
-        var payments = await _paymentService.GetByCardIds(CheckedCards.Select(card => card.Id).ToList());
-        var incomes = await _incomeService.GetByCardIds(CheckedCards.Select(card => card.Id).ToList());
-
-        Operations = payments
-            .Select(payment => (IOperation)payment)
-            .Concat(incomes)
-            .OrderByDescending(operation => operation.DateTime)
-            .ToList();
+        AllCards = userCards.OrderBy(card => card.Name).ToList();
+        CheckedCardIds = AllCards.Select(card => card.Id).ToList();
+        CardNames = AllCards.ToDictionary(card => card.Id, card => card.Name);
+        Sum = AllCards.Where(card => CheckedCardIds.Contains(card.Id)).Select(card => card.Balance).Sum();
+        Operations = operations.OrderByDescending(operation => operation.DateTime).ToList();
 
         return Page();
     }
     
     public async Task<IActionResult> OnPost(List<Guid> cardIds)
     {
-        if (!_signInManager.IsSignedIn(User))
-            return Redirect("SignIn");
+        var userCards = await _operationsService.GetAllUserCards(User);
+        var operations = await _operationsService.GetUserOperationsByCardIds(User, cardIds);
 
-        var user = await _signInManager.UserManager.GetUserAsync(User);
-        
-        AllCards = await _cardService.GetByUserId(user.Id);
-        CheckedCards = (await _cardService.GetByIds(cardIds)).OrderBy(card => card.Name).ToList();
-
-        if (CheckedCards.Any(card => card.UserId != user.Id))
-            return Forbid();
-        
-        var payments = await _paymentService.GetByCardIds(cardIds);
-        var incomes = await _incomeService.GetByCardIds(cardIds);
-
-        Operations = payments
-            .Select(payment => (IOperation)payment)
-            .Concat(incomes)
-            .OrderByDescending(operation => operation.DateTime)
-            .ToList();
+        AllCards = userCards.OrderBy(card => card.Name).ToList();
+        CheckedCardIds = cardIds;
+        CardNames = AllCards.ToDictionary(card => card.Id, card => card.Name);
+        Sum = AllCards.Where(card => CheckedCardIds.Contains(card.Id)).Select(card => card.Balance).Sum();
+        Operations = operations.OrderByDescending(operation => operation.DateTime).ToList();
 
         return Page();
     }
 
     public async Task<IActionResult> OnPostPayment(CreatePaymentDto dto)
     {
-        if (!_signInManager.IsSignedIn(User))
-            return Redirect("SignIn");
-
-        var user = await _signInManager.UserManager.GetUserAsync(User);
-        var cardIds = (await _cardService.GetByUserId(user.Id)).Select(card => card.Id);
-        if (!cardIds.Contains(dto.CardId))
-            return Forbid();
-        
-        await _paymentService.Create(dto);
+        await _operationsService.CreatePayment(User, dto);
 
         return RedirectToPage();
     }
 
     public async Task<IActionResult> OnPostIncome(CreateIncomeDto dto)
     {
-        if (!_signInManager.IsSignedIn(User))
-            return Redirect("SignIn");
-        
-        var user = await _signInManager.UserManager.GetUserAsync(User);
-        var cardIds = (await _cardService.GetByUserId(user.Id)).Select(card => card.Id);
-        if (!cardIds.Contains(dto.CardId))
-            return Forbid();
-
-        await _incomeService.Create(dto);
+        await _operationsService.CreateIncome(User, dto);
 
         return RedirectToPage();
     }
     
     public async Task<IActionResult> OnPostUpdatePayment(UpdatePaymentDto dto)
     {
-        await _paymentService.Update(dto);
-        
-        //TODO: add checks
+        await _operationsService.UpdatePayment(User, dto);
 
         return RedirectToPage();
     }
     
     public async Task<IActionResult> OnPostUpdateIncome(UpdateIncomeDto dto)
     {
-        await _incomeService.Update(dto);
-        
-        //TODO: add checks
+        await _operationsService.UpdateIncome(User, dto);
 
         return RedirectToPage();
     }
     
     public async Task<IActionResult> OnPostDeletePayment(Guid id)
     {
-        await _paymentService.Delete(id);
-        
-        //TODO: add checks
+        await _operationsService.DeletePayment(User, id);
 
         return RedirectToPage();
     }
 
     public async Task<IActionResult> OnPostDeleteIncome(Guid id)
     {
-        await _incomeService.Delete(id);
-        
-        //TODO: add checks
+        await _operationsService.DeleteIncome(User, id);
 
         return RedirectToPage();
     }

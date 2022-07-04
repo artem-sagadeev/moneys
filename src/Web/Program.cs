@@ -1,3 +1,5 @@
+using ApplicationServices.Identity;
+using ApplicationServices.Operations;
 using Identity.Data;
 using Identity.Entities;
 using Identity.Logic;
@@ -18,7 +20,7 @@ builder.Services.AddScoped<IPaymentService, PaymentService>();
 builder.Services.AddScoped<ICardService, CardService>();
 builder.Services.AddDbContext<OperationsContext>(options =>
 {
-    options.UseNpgsql(builder.Configuration.GetConnectionString("Heroku"), npgsqlOptions => 
+    options.UseNpgsql(builder.Configuration.GetConnectionString("Local"), npgsqlOptions => 
         npgsqlOptions.MigrationsAssembly("Operations"));
 });
 
@@ -30,9 +32,12 @@ builder.Services.AddIdentity<User, IdentityRole>(options =>
 }).AddEntityFrameworkStores<IdentityContext>();
 builder.Services.AddDbContext<IdentityContext>(options =>
 {
-    options.UseNpgsql(builder.Configuration.GetConnectionString("Heroku"), npgsqlOptions => 
+    options.UseNpgsql(builder.Configuration.GetConnectionString("Local"), npgsqlOptions => 
         npgsqlOptions.MigrationsAssembly("Identity"));
 });
+
+builder.Services.AddScoped<IOperationsService, OperationsService>();
+builder.Services.AddScoped<IIdentityService, IdentityService>();
 
 var app = builder.Build();
 
@@ -52,6 +57,6 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.MapRazorPages();
+app.MapRazorPages().RequireAuthorization();
 
 app.Run();

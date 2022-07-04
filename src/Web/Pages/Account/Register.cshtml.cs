@@ -1,19 +1,20 @@
 ﻿using Identity.Dtos;
 using Identity.Entities;
 using Identity.Logic;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace Web.Pages;
+namespace Web.Pages.Account;
 
-public class SignUpModel : PageModel
+[AllowAnonymous]
+public class RegisterModel : PageModel
 {
-    
     private readonly SignInManager<User> _signInManager;
     private readonly IAccountService _accountService;
 
-    public SignUpModel(SignInManager<User> signInManager, IAccountService accountService)
+    public RegisterModel(SignInManager<User> signInManager, IAccountService accountService)
     {
         _signInManager = signInManager;
         _accountService = accountService;
@@ -22,7 +23,7 @@ public class SignUpModel : PageModel
     public IActionResult OnGet()
     {
         if (_signInManager.IsSignedIn(User))
-            return RedirectToPage("Profile");
+            return RedirectToPage("/Account/Index");
 
         return Page();
     }
@@ -30,13 +31,13 @@ public class SignUpModel : PageModel
     public async Task<IActionResult> OnPost(SignUpDto dto)
     {
         if (_signInManager.IsSignedIn(User))
-            return RedirectToPage("Profile");
+            return RedirectToPage("/Account/Index");
         
         var user = await _accountService.SignUp(dto);
         if (user is not null)
         {
-            await _signInManager.SignInAsync(user, true);
-            return RedirectToPage("Profile");
+            await _signInManager.SignInAsync(user, dto.IsPersistent);
+            return RedirectToPage("/Account/Index");
         }
         
         return Page();

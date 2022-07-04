@@ -1,5 +1,9 @@
 ﻿@page
-@model Web.Pages.SignUpModel
+@model Web.Pages.Account.RegisterModel
+
+@{
+    ViewData["Title"] = "Register";
+}
 
 <div class="d-flex justify-content-center align-items-center">
     <form method="POST" id="signUpForm">
@@ -22,8 +26,8 @@
             </div>
         </div>
         <div class="mb-3 form-check">
-            <input type="checkbox" class="form-check-input input-dark" id="check">
-            <label class="form-check-label" for="check" name="remember">Check me out</label>
+            <input type="checkbox" class="form-check-input checkbox-dark" id="check" name="rememberMe">
+            <label class="form-check-label" for="check">Check me out</label>
         </div>
         <button id="signUpButton" type="button" class="btn btn-dark">Submit</button>
     </form>

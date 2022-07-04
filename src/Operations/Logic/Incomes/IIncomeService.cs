@@ -5,6 +5,8 @@ namespace Operations.Logic.Incomes;
 
 public interface IIncomeService
 {
+    public Task<Income> Get(Guid id);
+
     public Task<List<Income>> GetByCardId(Guid cardId);
     
     public Task<List<Income>> GetByCardIds(List<Guid> cardIds); 

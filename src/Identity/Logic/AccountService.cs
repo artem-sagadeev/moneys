@@ -28,7 +28,7 @@ public class AccountService : IAccountService
         if (string.IsNullOrWhiteSpace(dto.Password))
             throw new FieldIsRequiredException();
         
-        var result = await _signInManager.PasswordSignInAsync(dto.Login, dto.Password, true, false);
+        var result = await _signInManager.PasswordSignInAsync(dto.Login, dto.Password, dto.IsPersistent, false);
         return result;
     }
 

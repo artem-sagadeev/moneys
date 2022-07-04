@@ -1,8 +1,9 @@
+using Common.Interfaces;
 using Operations.Dtos;
 
 namespace Operations.Entities;
 
-public class Card
+public class Card : IEntity
 {
     public Guid Id { get; set; }
     

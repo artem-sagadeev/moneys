@@ -6,6 +6,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\ApplicationServices\ApplicationServices.csproj" />
       <ProjectReference Include="..\Identity\Identity.csproj" />
       <ProjectReference Include="..\Operations\Operations.csproj" />
     </ItemGroup>

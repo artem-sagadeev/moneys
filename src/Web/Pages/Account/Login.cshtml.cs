@@ -6,15 +6,15 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace Web.Pages;
+namespace Web.Pages.Account;
 
 [AllowAnonymous]
-public class SignInModel : PageModel
+public class LoginModel : PageModel
 {
     private readonly SignInManager<User> _signInManager;
     private readonly IAccountService _accountService;
 
-    public SignInModel(SignInManager<User> signInManager, IAccountService accountService)
+    public LoginModel(SignInManager<User> signInManager, IAccountService accountService)
     {
         _signInManager = signInManager;
         _accountService = accountService;
@@ -25,7 +25,7 @@ public class SignInModel : PageModel
     public IActionResult OnGet()
     {
         if (_signInManager.IsSignedIn(User))
-            return RedirectToPage("Profile");
+            return RedirectToPage("/Account/Index");
 
         return Page();
     }
@@ -33,12 +33,12 @@ public class SignInModel : PageModel
     public async Task<IActionResult> OnPost(SignInDto dto)
     {
         if (_signInManager.IsSignedIn(User))
-            return RedirectToPage("Profile");
+            return RedirectToPage("/Account/Index");
         
         var result = await _accountService.SignIn(dto);
         if (result.Succeeded)
         {
-            return RedirectToPage("Profile");
+            return RedirectToPage("/Account/Index");
         }
 
         ErrorMessage = "Invalid login attempt";
