@@ -9,6 +9,9 @@ using Operations.Data;
 using Operations.Logic.Cards;
 using Operations.Logic.Incomes;
 using Operations.Logic.Payments;
+using ShoppingLists.Data;
+using ShoppingLists.Logic.ListItems;
+using ShoppingLists.Logic.ShoppingLists;
 
 var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Environment.EnvironmentName == "Development"
@@ -37,6 +40,14 @@ builder.Services.AddDbContext<IdentityContext>(options =>
 {
     options.UseNpgsql(connectionString, npgsqlOptions => 
         npgsqlOptions.MigrationsAssembly("Identity"));
+});
+
+builder.Services.AddScoped<IShoppingListsService, ShoppingListService>();
+builder.Services.AddScoped<IListItemsService, ListItemsService>();
+builder.Services.AddDbContext<ShoppingListsContext>(options =>
+{
+    options.UseNpgsql(connectionString, npgsqlOptions => 
+        npgsqlOptions.MigrationsAssembly("ShoppingLists"));
 });
 
 builder.Services.AddScoped<IOperationsService, OperationsService>();

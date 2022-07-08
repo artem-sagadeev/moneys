@@ -1,6 +1,9 @@
-﻿namespace ShoppingLists.Entities;
+﻿using Common.Interfaces;
+using ShoppingLists.Dtos;
 
-public class ShoppingList
+namespace ShoppingLists.Entities;
+
+public class ShoppingList : IEntity, IUserBelonging
 {
     public Guid Id { get; set; }
     
@@ -11,4 +14,14 @@ public class ShoppingList
     public string UserId { get; set; }
 
     public List<ListItem> ListItems { get; set; }
+
+    public ShoppingList(CreateShoppingListDto dto)
+    {
+        Id = Guid.NewGuid();
+        Name = dto.Name;
+        CreationTime = DateTime.Now;
+        UserId = dto.UserId;
+    }
+    
+    private ShoppingList() {}
 }

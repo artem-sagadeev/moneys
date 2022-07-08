@@ -5,7 +5,7 @@ namespace ShoppingLists.Logic.ShoppingLists;
 
 public interface IShoppingListsService
 {
-    public Task<List<ShoppingList>> GetByUserId(Guid userId);
+    public Task<List<ShoppingList>> GetByUserId(string userId);
 
     public Task<ShoppingList> GetWithItems(Guid id);
 

@@ -1,4 +1,5 @@
 using Common.Exceptions;
+using Common.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Operations.Data;
 using Operations.Dtos;
@@ -27,7 +28,7 @@ public class CardService : ICardService
 
     public async Task<List<Card>> GetByUserId(string userId)
     {
-        var cards = await _context.Cards.Where(card => card.UserId == userId).ToListAsync();
+        var cards = await _context.Cards.GetByUserId(userId);
 
         return cards;
     }
