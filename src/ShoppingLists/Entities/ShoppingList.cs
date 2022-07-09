@@ -19,7 +19,7 @@ public class ShoppingList : IEntity, IUserBelonging
     {
         Id = Guid.NewGuid();
         Name = dto.Name;
-        CreationTime = DateTime.Now;
+        CreationTime = DateTime.UtcNow;
         UserId = dto.UserId;
     }
     

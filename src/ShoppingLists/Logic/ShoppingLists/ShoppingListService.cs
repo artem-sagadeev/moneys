@@ -7,7 +7,7 @@ using ShoppingLists.Entities;
 
 namespace ShoppingLists.Logic.ShoppingLists;
 
-public class ShoppingListService : IShoppingListsService
+public class ShoppingListService : IShoppingListService
 {
     private readonly ShoppingListsContext _context;
 
@@ -19,6 +19,17 @@ public class ShoppingListService : IShoppingListsService
     public async Task<List<ShoppingList>> GetByUserId(string userId)
     {
         var shoppingLists = await _context.ShoppingLists.GetByUserId(userId);
+
+        return shoppingLists;
+    }
+
+    public async Task<List<ShoppingList>> GetByUserIdWithItems(string userId)
+    {
+        var shoppingLists = await _context
+            .ShoppingLists
+            .Include(list => list.ListItems)
+            .Where(list => list.UserId == userId)
+            .ToListAsync();
 
         return shoppingLists;
     }
@@ -56,6 +67,7 @@ public class ShoppingListService : IShoppingListsService
         var shoppingList = await _context
             .ShoppingLists
             .Include(list => list.ListItems)
+            .Where(list => list.Id == id)
             .SingleOrDefaultAsync();
         
         if (shoppingList is null)

@@ -28,7 +28,7 @@ public class ListItem : IEntity
         Price = dto.Price;
         Count = dto.Count;
         IsPurchased = false;
-        CreationTime = DateTime.Now;
+        CreationTime = DateTime.UtcNow;
         ShoppingListId = dto.ShoppingListId;
     }
     

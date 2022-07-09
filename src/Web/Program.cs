@@ -1,5 +1,6 @@
 using ApplicationServices.Identity;
 using ApplicationServices.Operations;
+using ApplicationServices.ShoppingLists;
 using Identity.Data;
 using Identity.Entities;
 using Identity.Logic;
@@ -42,7 +43,7 @@ builder.Services.AddDbContext<IdentityContext>(options =>
         npgsqlOptions.MigrationsAssembly("Identity"));
 });
 
-builder.Services.AddScoped<IShoppingListsService, ShoppingListService>();
+builder.Services.AddScoped<IShoppingListService, ShoppingListService>();
 builder.Services.AddScoped<IListItemsService, ListItemsService>();
 builder.Services.AddDbContext<ShoppingListsContext>(options =>
 {
@@ -52,6 +53,7 @@ builder.Services.AddDbContext<ShoppingListsContext>(options =>
 
 builder.Services.AddScoped<IOperationsService, OperationsService>();
 builder.Services.AddScoped<IIdentityService, IdentityService>();
+builder.Services.AddScoped<IShoppingListsService, ShoppingListsService>();
 
 var app = builder.Build();
 

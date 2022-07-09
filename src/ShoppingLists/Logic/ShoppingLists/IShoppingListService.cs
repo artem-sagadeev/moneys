@@ -3,9 +3,11 @@ using ShoppingLists.Entities;
 
 namespace ShoppingLists.Logic.ShoppingLists;
 
-public interface IShoppingListsService
+public interface IShoppingListService
 {
     public Task<List<ShoppingList>> GetByUserId(string userId);
+    
+    public Task<List<ShoppingList>> GetByUserIdWithItems(string userId);
 
     public Task<ShoppingList> GetWithItems(Guid id);
 
