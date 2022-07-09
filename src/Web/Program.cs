@@ -13,7 +13,7 @@ using Operations.Logic.Payments;
 var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Environment.EnvironmentName == "Development"
     ? builder.Configuration.GetConnectionString("Local")
-    : builder.Configuration.GetConnectionString("Heroku");
+    : Environment.GetEnvironmentVariable("DATABASE_URL")!;
 
 // Add services to the container.
 builder.Services.AddRazorPages();
