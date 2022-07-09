@@ -1,5 +1,6 @@
 using ApplicationServices.Identity;
 using ApplicationServices.Operations;
+using Common.Helpers;
 using Identity.Data;
 using Identity.Entities;
 using Identity.Logic;
@@ -11,9 +12,9 @@ using Operations.Logic.Incomes;
 using Operations.Logic.Payments;
 
 var builder = WebApplication.CreateBuilder(args);
-var connectionString = builder.Environment.EnvironmentName == "Development"
+var connectionString = builder.Environment.IsEnvironment(Environments.Development)
     ? builder.Configuration.GetConnectionString("Local")
-    : Environment.GetEnvironmentVariable("DATABASE_URL")!;
+    : ConnectionStringConverter.ConvertFromUrl(Environment.GetEnvironmentVariable("DATABASE_URL")!);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
