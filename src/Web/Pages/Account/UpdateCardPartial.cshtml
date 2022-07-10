@@ -1,0 +1,26 @@
+﻿@using Card = global::Operations.Entities.Card
+@model Card
+
+<div class="modal fade" id="@string.Concat("id", Model.Id)" tabindex="-1" aria-labelledby="updateCardModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="POST" asp-page-handler="UpdateCard">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="updateCardModalLabel">Update card</h5>
+                    <button type="button" class="btn-close btn-close-dark" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="updateCardName" class="form-label">Name</label>
+                        <input type="text" class="form-control input-dark" id="updateCardName" name="name" autocomplete="off" value="@Model.Name">
+                    </div>
+                </div>
+                <input type="hidden" name="id" id="updateCardId" value="@Model.Id">
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-dark">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
