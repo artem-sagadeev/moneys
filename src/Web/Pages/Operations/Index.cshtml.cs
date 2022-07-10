@@ -1,25 +1,19 @@
-﻿using ApplicationServices;
-using ApplicationServices.Operations;
-using Identity.Entities;
+﻿using ApplicationServices.Operations;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Operations.Dtos;
 using Operations.Entities;
 using Operations.Interfaces;
-using Operations.Logic.Cards;
-using Operations.Logic.Incomes;
-using Operations.Logic.Payments;
 
-namespace Web.Pages;
+namespace Web.Pages.Operations;
 
 [Authorize]
-public class OperationsModel : PageModel
+public class IndexModel : PageModel
 {
     private readonly IOperationsService _operationsService;
 
-    public OperationsModel(IOperationsService operationsService)
+    public IndexModel(IOperationsService operationsService)
     {
         _operationsService = operationsService;
     }

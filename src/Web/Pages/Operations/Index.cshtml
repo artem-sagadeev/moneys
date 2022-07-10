@@ -1,0 +1,115 @@
+﻿@page
+@using global::Operations.Entities
+@model IndexModel
+
+@{
+    ViewData["Title"] = "Operations";
+}
+
+<div class="h4">Sum: @Model.Sum ₽</div>
+<div class="row g-2 row-cols-auto">
+    <div class="col">
+        <!-- Button trigger modal -->
+        <button type="button" class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#addPaymentModal">
+            Add Payment
+        </button>
+    </div>
+    <div class="col">
+        <!-- Button trigger modal -->
+        <button type="button" class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#addIncomeModal">
+            Add Income
+        </button>
+    </div>
+    <div class="dropdown col-4">
+        @* ReSharper disable once Html.IdDuplication *@
+        <button class="btn btn-dark dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" id="dropdownMenuClickableInside" data-bs-auto-close="outside">
+            Select cards
+        </button>
+        <div class="dropdown-menu">
+            <form class="px-2 py-2" method="POST">
+                @foreach (var card in Model.AllCards)
+                {
+                    <div class="mb-1">
+                        <div class="form-check form-check-inline">
+                            @if (Model.CheckedCardIds.Contains(card.Id))
+                            {
+                                <input type="checkbox" class="form-check-input checkbox-dark" id="card" name="cardIds" value="@card.Id" checked>
+                            }
+                            else
+                            {
+                                <input type="checkbox" class="form-check-input checkbox-dark" id="card" name="cardIds" value="@card.Id">
+                            }
+                            <label class="form-check-label" for="card">
+                                @card.Name, balance: @card.Balance
+                            </label>
+                        </div>
+                    </div>
+                }
+                <button type="submit" class="btn btn-dark">Load</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<table class="table table-hover">
+    <thead>
+    <tr>
+        <th scope="col">Type</th>
+        <th scope="col">Date</th>
+        <th scope="col">Name</th>
+        <th scope="col">Amount</th>
+        <th scope="col">Card</th>
+        <th scope="col">Manage</th>
+    </tr>
+    </thead>
+    <tbody class="table-group-divider">
+    @foreach (var operation in Model.Operations)
+    {
+        @if (operation is Payment payment)
+        {
+            <tr>
+                <th class="col-1" scope="row">-</th>
+                <td class="col-2">@payment.DateTime</td>
+                <td class="col-3">@payment.Name</td>
+                <td class="col-2">@payment.Amount ₽</td>
+                <td class="col-2">@Model.CardNames[payment.CardId]</td>
+                <td class="col-2">
+                    <form method="POST">
+                        <button type="button" class="btn-link" data-bs-toggle="modal" data-bs-target="#@string.Concat("id", payment.Id)">Update</button>
+                        <button type="submit" class="btn-link" asp-page-handler="DeletePayment" asp-route-id="@payment.Id">Delete</button>
+                    </form>
+                </td>
+            </tr>
+            <div class="modal fade" id="@string.Concat("id", payment.Id)" tabindex="-1" aria-labelledby="updatePaymentModalLabel" aria-hidden="true">
+                <partial name="UpdatePaymentPartial" model="@(Model.AllCards, payment)"/>
+            </div>
+            
+        }
+        else if (operation is Income income)
+        {
+            <tr class="table-success">
+                <th class="col-1" scope="row">+</th>
+                <td class="col-2">@income.DateTime</td>
+                <td class="col-3">@income.Name</td>
+                <td class="col-2">@income.Amount ₽</td>
+                <td class="col-2">@Model.CardNames[income.CardId]</td>
+                <td class="col-2">
+                    <form method="POST">
+                        <button type="button" class="btn-link" data-bs-toggle="modal" data-bs-target="#@string.Concat("id", income.Id)">Update</button>
+                        <button type="submit" class="btn-link" asp-page-handler="DeleteIncome" asp-route-id="@income.Id">Delete</button>
+                    </form>
+                </td>
+            </tr>
+            <div class="modal fade" id="@string.Concat("id", income.Id)" tabindex="-1" aria-labelledby="updateIncomeModalLabel" aria-hidden="true">
+                <partial name="UpdateIncomePartial" model="@(Model.AllCards, income)"/>
+            </div>
+        }
+    }
+    </tbody>
+</table>
+
+<!-- Add Payment Modal -->
+<partial name="AddPaymentPartial" model="@Model.AllCards"/>
+
+<!-- Add Income Modal -->
+<partial name="AddIncomePartial" model="@Model.AllCards"/>
