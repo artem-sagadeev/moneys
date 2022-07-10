@@ -18,7 +18,16 @@
             @foreach (var item in Model.ListItems)
             {
                 <tr>
-                    <th scope="row"></th>
+                    <th scope="row">
+                        @if (item.IsPurchased)
+                        {
+                            <input type="checkbox" class="form-check-input checkbox-dark" checked disabled/> 
+                        }
+                        else
+                        {
+                            <input type="checkbox" class="form-check-input checkbox-dark" disabled/> 
+                        }
+                    </th>
                     <td>@item.Name</td>
                     <td>@item.Price</td>
                 </tr>
