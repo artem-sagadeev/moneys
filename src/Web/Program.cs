@@ -1,6 +1,7 @@
 using ApplicationServices.Identity;
 using ApplicationServices.Operations;
 using ApplicationServices.ShoppingLists;
+using Common.Helpers;
 using Identity.Data;
 using Identity.Entities;
 using Identity.Logic;
@@ -15,9 +16,9 @@ using ShoppingLists.Logic.ListItems;
 using ShoppingLists.Logic.ShoppingLists;
 
 var builder = WebApplication.CreateBuilder(args);
-var connectionString = builder.Environment.EnvironmentName == "Development"
+var connectionString = builder.Environment.IsEnvironment(Environments.Development)
     ? builder.Configuration.GetConnectionString("Local")
-    : builder.Configuration.GetConnectionString("Heroku");
+    : ConnectionStringConverter.ConvertFromUrl(Environment.GetEnvironmentVariable("DATABASE_URL")!);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
