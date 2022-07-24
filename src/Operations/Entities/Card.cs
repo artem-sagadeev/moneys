@@ -25,5 +25,5 @@ public class Card : IEntity, IUserBelonging
         UserId = dto.UserId;
     }
     
-    private Card() {}
+    public Card() {}
 }
