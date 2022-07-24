@@ -79,7 +79,7 @@
     <tbody class="table-group-divider">
     @foreach (var operation in Model.Operations)
     {
-        @if (operation is Payment payment)
+        @if (operation is PaymentRecord payment)
         {
             <tr>
                 <th class="col-1" scope="row">-</th>
@@ -99,7 +99,7 @@
             </div>
             
         }
-        else if (operation is Income income)
+        else if (operation is IncomeRecord income)
         {
             <tr class="table-success">
                 <th class="col-1" scope="row">+</th>

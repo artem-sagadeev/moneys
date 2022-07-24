@@ -32,8 +32,8 @@ public class CardTests
     [TearDown]
     public void TearDown()
     {
-        _context.Incomes.RemoveRange(_context.Incomes);
-        _context.Payments.RemoveRange(_context.Payments);
+        _context.IncomeRecords.RemoveRange(_context.IncomeRecords);
+        _context.PaymentRecords.RemoveRange(_context.PaymentRecords);
         _context.Cards.RemoveRange(_context.Cards);
         _context.SaveChanges();
         _context.Dispose();

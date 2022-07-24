@@ -1,10 +1,10 @@
 namespace Operations.Dtos;
 
-public class UpdatePaymentDto
+public class CreatePaymentRecordDto
 {
-    public Guid Id { get; set; }
-    
     public string Name { get; set; }
+    
+    public int Amount { get; set; }
     
     public Guid CardId { get; set; }
 }

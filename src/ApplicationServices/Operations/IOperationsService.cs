@@ -9,17 +9,17 @@ public interface IOperationsService
 {
     public Task<List<Card>> GetAllUserCards(ClaimsPrincipal user);
 
-    public Task<List<IOperation>> GetAllUserOperations(ClaimsPrincipal user);
+    public Task<List<IOperationRecord>> GetAllUserOperations(ClaimsPrincipal user);
     
-    public Task<List<IOperation>> GetUserOperationsByCardIds(ClaimsPrincipal user, List<Guid> cardIds);
+    public Task<List<IOperationRecord>> GetUserOperationsByCardIds(ClaimsPrincipal user, List<Guid> cardIds);
 
-    public Task CreatePayment(ClaimsPrincipal user, CreatePaymentDto dto);
+    public Task CreatePayment(ClaimsPrincipal user, CreatePaymentRecordDto recordDto);
     
-    public Task CreateIncome(ClaimsPrincipal user, CreateIncomeDto dto);
+    public Task CreateIncome(ClaimsPrincipal user, CreateIncomeRecordDto recordDto);
     
-    public Task UpdatePayment(ClaimsPrincipal user, UpdatePaymentDto dto);
+    public Task UpdatePayment(ClaimsPrincipal user, UpdatePaymentRecordDto recordDto);
     
-    public Task UpdateIncome(ClaimsPrincipal user, UpdateIncomeDto dto);
+    public Task UpdateIncome(ClaimsPrincipal user, UpdateIncomeRecordDto recordDto);
     
     public Task DeletePayment(ClaimsPrincipal user, Guid paymentId);
     

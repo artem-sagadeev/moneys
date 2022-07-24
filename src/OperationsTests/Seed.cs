@@ -4,14 +4,14 @@ namespace OperationsTests;
 
 public static class Seed
 {
-    public static readonly List<Card> CardsWithoutIncomes = new()
+    public static readonly List<Card> CardsWithoutIncomeRecords = new()
     {
         new Card {Id = Guid.NewGuid(), Name = "Card without incomes 1", Balance = 1000, UserId = "user"},
         new Card {Id = Guid.NewGuid(), Name = "Card without incomes 2", Balance = 2000, UserId = "user"},
         new Card {Id = Guid.NewGuid(), Name = "Card without incomes 3", Balance = 3000, UserId = "user"}
     };
     
-    public static readonly List<Card> CardsWithoutPayments = new()
+    public static readonly List<Card> CardsWithoutPaymentRecords = new()
     {
         new Card {Id = Guid.NewGuid(), Name = "Card without payments 1", Balance = 1000, UserId = "user"},
         new Card {Id = Guid.NewGuid(), Name = "Card without payments 2", Balance = 2000, UserId = "user"},
@@ -25,26 +25,26 @@ public static class Seed
         new Card {Id = Guid.NewGuid(), Name = "Card 3", Balance = 3000, UserId = "user"}
     };
 
-    public static readonly Income IncomeWithLargeAmount =
+    public static readonly IncomeRecord IncomeRecordWithLargeAmount =
         new () {Id = Guid.NewGuid(), Name = "Income with large amount", Amount = 10000, DateTime = DateTime.UtcNow, CardId = Cards[0].Id};
     
-    public static readonly List<Income> Incomes = new()
+    public static readonly List<IncomeRecord> IncomeRecords = new()
     {
-        new Income {Id = Guid.NewGuid(), Name = "Income 1", Amount = 100, DateTime = DateTime.UtcNow, CardId = Cards[0].Id},
-        new Income {Id = Guid.NewGuid(), Name = "Income 2", Amount = 200, DateTime = DateTime.UtcNow, CardId = Cards[1].Id},
-        new Income {Id = Guid.NewGuid(), Name = "Income 3", Amount = 300, DateTime = DateTime.UtcNow, CardId = Cards[2].Id},
-        IncomeWithLargeAmount
+        new IncomeRecord {Id = Guid.NewGuid(), Name = "Income 1", Amount = 100, DateTime = DateTime.UtcNow, CardId = Cards[0].Id},
+        new IncomeRecord {Id = Guid.NewGuid(), Name = "Income 2", Amount = 200, DateTime = DateTime.UtcNow, CardId = Cards[1].Id},
+        new IncomeRecord {Id = Guid.NewGuid(), Name = "Income 3", Amount = 300, DateTime = DateTime.UtcNow, CardId = Cards[2].Id},
+        IncomeRecordWithLargeAmount
     };
     
-    public static readonly Payment PaymentWithLargeAmount = 
+    public static readonly PaymentRecord PaymentRecordWithLargeAmount = 
         new () {Id = Guid.NewGuid(), Name = "Payment with large amount", Amount = 10000, DateTime = DateTime.UtcNow, CardId = Cards[0].Id};
     
-    public static readonly List<Payment> Payments = new()
+    public static readonly List<PaymentRecord> PaymentRecords = new()
     {
-        new Payment {Id = Guid.NewGuid(), Name = "Payment 1", Amount = 100, DateTime = DateTime.UtcNow, CardId = Cards[0].Id},
-        new Payment {Id = Guid.NewGuid(), Name = "Payment 2", Amount = 200, DateTime = DateTime.UtcNow, CardId = Cards[1].Id},
-        new Payment {Id = Guid.NewGuid(), Name = "Payment 3", Amount = 300, DateTime = DateTime.UtcNow, CardId = Cards[2].Id},
-        PaymentWithLargeAmount
+        new PaymentRecord {Id = Guid.NewGuid(), Name = "Payment 1", Amount = 100, DateTime = DateTime.UtcNow, CardId = Cards[0].Id},
+        new PaymentRecord {Id = Guid.NewGuid(), Name = "Payment 2", Amount = 200, DateTime = DateTime.UtcNow, CardId = Cards[1].Id},
+        new PaymentRecord {Id = Guid.NewGuid(), Name = "Payment 3", Amount = 300, DateTime = DateTime.UtcNow, CardId = Cards[2].Id},
+        PaymentRecordWithLargeAmount
     };
 
     public static Guid NotExistedCardId()
@@ -58,10 +58,10 @@ public static class Seed
         return notExistedId;
     }
     
-    public static Guid NotExistedIncomeId()
+    public static Guid NotExistedIncomeRecordId()
     {
         var notExistedId = Guid.NewGuid();
-        while (Incomes.Select(income => income.Id).Contains(notExistedId))
+        while (IncomeRecords.Select(income => income.Id).Contains(notExistedId))
         {
             notExistedId = Guid.NewGuid();
         }
@@ -69,10 +69,10 @@ public static class Seed
         return notExistedId;
     }
     
-    public static Guid NotExistedPaymentId()
+    public static Guid NotExistedPaymentRecordId()
     {
         var notExistedId = Guid.NewGuid();
-        while (Payments.Select(payment => payment.Id).Contains(notExistedId))
+        while (PaymentRecords.Select(payment => payment.Id).Contains(notExistedId))
         {
             notExistedId = Guid.NewGuid();
         }

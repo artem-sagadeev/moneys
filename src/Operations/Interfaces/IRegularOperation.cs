@@ -7,4 +7,6 @@ public interface IRegularOperation : IOperation
     public Frequency Frequency { get; set; }
     
     public bool IsActive { get; set; }
+    
+    public DateTime NextExecution { get; set; }
 }

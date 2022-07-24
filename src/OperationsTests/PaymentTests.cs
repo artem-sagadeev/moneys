@@ -23,9 +23,9 @@ public class PaymentTests
         
         using (var context = new OperationsContext(options))
         {
-            context.Payments.AddRange(Seed.Payments);
+            context.PaymentRecords.AddRange(Seed.PaymentRecords);
             context.Cards.AddRange(Seed.Cards);
-            context.Cards.AddRange(Seed.CardsWithoutPayments);
+            context.Cards.AddRange(Seed.CardsWithoutPaymentRecords);
             context.SaveChanges();
         }
 
@@ -36,8 +36,8 @@ public class PaymentTests
     [TearDown]
     public void TearDown()
     {
-        _context.Incomes.RemoveRange(_context.Incomes);
-        _context.Payments.RemoveRange(_context.Payments);
+        _context.IncomeRecords.RemoveRange(_context.IncomeRecords);
+        _context.PaymentRecords.RemoveRange(_context.PaymentRecords);
         _context.Cards.RemoveRange(_context.Cards);
         _context.SaveChanges();
         _context.Dispose();
@@ -46,7 +46,7 @@ public class PaymentTests
     [Test]
     public async Task Get_ReturnsPayment()
     {
-        var payment = Seed.Payments[0];
+        var payment = Seed.PaymentRecords[0];
         
         var returnedPayment = await _paymentService.Get(payment.Id);
         
@@ -57,7 +57,7 @@ public class PaymentTests
     [Test]
     public void Get_Throws_IfPaymentDoesNotExist()
     {
-        var notExistedId = Seed.NotExistedPaymentId();
+        var notExistedId = Seed.NotExistedPaymentRecordId();
         
         Assert.That(async () =>
         {
@@ -69,7 +69,7 @@ public class PaymentTests
     public async Task GetByCardId_ReturnsPayments()
     {
         var card = Seed.Cards[0];
-        var payments = Seed.Payments.Where(payment => payment.CardId == card.Id).ToList();
+        var payments = Seed.PaymentRecords.Where(payment => payment.CardId == card.Id).ToList();
 
         var returnedPayments = await _paymentService.GetByCardId(card.Id);
         
@@ -95,11 +95,11 @@ public class PaymentTests
     [Test]
     public async Task GetByCardId_ReturnsEmptyList_IfThereIsNoPayments()
     {
-        var card = Seed.CardsWithoutPayments[0];
+        var card = Seed.CardsWithoutPaymentRecords[0];
 
         var returnedPayments = await _paymentService.GetByCardId(card.Id);
         
-        Assert.That(returnedPayments, Is.TypeOf<List<Payment>>());
+        Assert.That(returnedPayments, Is.TypeOf<List<PaymentRecord>>());
         Assert.That(returnedPayments, Has.Count.EqualTo(0));
     }
 
@@ -107,7 +107,7 @@ public class PaymentTests
     public async Task GetByCardIds_ReturnsPayments()
     {
         var cardIds = Seed.Cards.Ids();
-        var payments = Seed.Payments.Where(payment => cardIds.Contains(payment.CardId)).ToList();
+        var payments = Seed.PaymentRecords.Where(payment => cardIds.Contains(payment.CardId)).ToList();
         
         var returnedPayments = await _paymentService.GetByCardIds(cardIds);
         
@@ -134,18 +134,18 @@ public class PaymentTests
     [Test]
     public async Task GetByCardIds_ReturnsEmptyList_IfThereIsNoPayments()
     {
-        var cardIds = Seed.CardsWithoutPayments.Ids();
+        var cardIds = Seed.CardsWithoutPaymentRecords.Ids();
 
         var returnedPayments = await _paymentService.GetByCardIds(cardIds);
         
-        Assert.That(returnedPayments, Is.TypeOf<List<Payment>>());
+        Assert.That(returnedPayments, Is.TypeOf<List<PaymentRecord>>());
         Assert.That(returnedPayments, Has.Count.EqualTo(0));
     }
 
     [Test]
     public async Task Create_CreatesPayment()
     {
-        var dto = new CreatePaymentDto
+        var dto = new CreatePaymentRecordDto
         {
             Name = "New payment",
             Amount = 100,
@@ -154,7 +154,7 @@ public class PaymentTests
 
         var id = await _paymentService.Create(dto);
 
-        var createdPayment = await _context.Payments.GetById(id);
+        var createdPayment = await _context.PaymentRecords.GetById(id);
         Assert.That(createdPayment, Is.Not.Null);
         Assert.Multiple(() =>
         {
@@ -170,7 +170,7 @@ public class PaymentTests
     public async Task Create_ReducesCardBalance()
     {
         var card = Seed.Cards[0];
-        var dto = new CreatePaymentDto
+        var dto = new CreatePaymentRecordDto
         {
             Name = "New payment",
             Amount = 100,
@@ -186,7 +186,7 @@ public class PaymentTests
     [Test]
     public void Create_Throws_IfCardDoesNotExist()
     {
-        var dto = new CreatePaymentDto
+        var dto = new CreatePaymentRecordDto
         {
             Name = "New payment",
             Amount = 100,
@@ -203,7 +203,7 @@ public class PaymentTests
     public void Create_Throws_IfCardBalanceIsLessThanPaymentAmount()
     {
         var card = Seed.Cards[0];
-        var dto = new CreatePaymentDto
+        var dto = new CreatePaymentRecordDto
         {
             Name = "New payment",
             Amount = 10000,
@@ -219,8 +219,8 @@ public class PaymentTests
     [Test]
     public async Task Update_ChangesName()
     {
-        var payment = Seed.Payments[0];
-        var dto = new UpdatePaymentDto
+        var payment = Seed.PaymentRecords[0];
+        var dto = new UpdatePaymentRecordDto
         {
             Id = payment.Id,
             Name = "New name",
@@ -229,17 +229,17 @@ public class PaymentTests
 
         await _paymentService.Update(dto);
 
-        var updatedPayment = await _context.Payments.GetById(payment.Id);
+        var updatedPayment = await _context.PaymentRecords.GetById(payment.Id);
         Assert.That(updatedPayment.Name, Is.EqualTo(dto.Name));
     }
 
     [Test]
     public async Task Update_ChangesCardsBalance_IfCardIdIsChanged()
     {
-        var payment = Seed.Payments[0];
+        var payment = Seed.PaymentRecords[0];
         var oldCard = Seed.Cards.Single(card => card.Id == payment.CardId);
-        var newCard = Seed.CardsWithoutPayments[0];
-        var dto = new UpdatePaymentDto
+        var newCard = Seed.CardsWithoutPaymentRecords[0];
+        var dto = new UpdatePaymentRecordDto
         {
             Id = payment.Id,
             Name = payment.Name,
@@ -260,9 +260,9 @@ public class PaymentTests
     [Test]
     public void Update_Throws_IfPaymentDoesNotExist()
     {
-        var dto = new UpdatePaymentDto
+        var dto = new UpdatePaymentRecordDto
         {
-            Id = Seed.NotExistedPaymentId(),
+            Id = Seed.NotExistedPaymentRecordId(),
             Name = "Some name",
             CardId = Seed.Cards[0].Id
         };
@@ -276,9 +276,9 @@ public class PaymentTests
     [Test]
     public void Update_Throws_IfCardIdDoesNotExist()
     {
-        var payment = Seed.Payments[0];
+        var payment = Seed.PaymentRecords[0];
         var notExistedCardId = Seed.NotExistedCardId();
-        var dto = new UpdatePaymentDto
+        var dto = new UpdatePaymentRecordDto
         {
             Id = payment.Id,
             Name = payment.Name,
@@ -294,12 +294,12 @@ public class PaymentTests
     [Test]
     public void Update_Throws_IfNewCardBalanceIsLessThanPaymentAmount()
     {
-        var payment = Seed.PaymentWithLargeAmount;
-        var dto = new UpdatePaymentDto
+        var payment = Seed.PaymentRecordWithLargeAmount;
+        var dto = new UpdatePaymentRecordDto
         {
             Id = payment.Id,
             Name = payment.Name,
-            CardId = Seed.CardsWithoutPayments[0].Id
+            CardId = Seed.CardsWithoutPaymentRecords[0].Id
         };
         
         Assert.That(async () =>
@@ -311,18 +311,18 @@ public class PaymentTests
     [Test]
     public async Task Delete_DeletesPayment()
     {
-        var paymentId = Seed.Payments[0].Id;
+        var paymentId = Seed.PaymentRecords[0].Id;
 
         await _paymentService.Delete(paymentId);
 
-        var deletedPayment = await _context.Payments.FindAsync(paymentId);
+        var deletedPayment = await _context.PaymentRecords.FindAsync(paymentId);
         Assert.That(deletedPayment, Is.Null);
     }
     
     [Test]
     public async Task Delete_ChangesCardBalance()
     {
-        var payment = Seed.Payments[0];
+        var payment = Seed.PaymentRecords[0];
         var card = Seed.Cards.Single(card => card.Id == payment.CardId);
         
         await _paymentService.Delete(payment.Id);
@@ -334,7 +334,7 @@ public class PaymentTests
     [Test]
     public void Delete_Throws_IfPaymentDoesNotExist()
     {
-        var notExistedPaymentId = Seed.NotExistedPaymentId();
+        var notExistedPaymentId = Seed.NotExistedPaymentRecordId();
 
         Assert.That(async () =>
         {

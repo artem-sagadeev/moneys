@@ -23,9 +23,9 @@ public class IncomeTests
         
         using (var context = new OperationsContext(options))
         {
-            context.Incomes.AddRange(Seed.Incomes);
+            context.IncomeRecords.AddRange(Seed.IncomeRecords);
             context.Cards.AddRange(Seed.Cards);
-            context.Cards.AddRange(Seed.CardsWithoutIncomes);
+            context.Cards.AddRange(Seed.CardsWithoutIncomeRecords);
             context.SaveChanges();
         }
 
@@ -36,8 +36,8 @@ public class IncomeTests
     [TearDown]
     public void TearDown()
     {
-        _context.Incomes.RemoveRange(_context.Incomes);
-        _context.Payments.RemoveRange(_context.Payments);
+        _context.IncomeRecords.RemoveRange(_context.IncomeRecords);
+        _context.PaymentRecords.RemoveRange(_context.PaymentRecords);
         _context.Cards.RemoveRange(_context.Cards);
         _context.SaveChanges();
         _context.Dispose();
@@ -46,7 +46,7 @@ public class IncomeTests
     [Test]
     public async Task Get_ReturnsIncome()
     {
-        var income = Seed.Incomes[0];
+        var income = Seed.IncomeRecords[0];
         
         var returnedIncome = await _incomeService.Get(income.Id);
         
@@ -57,7 +57,7 @@ public class IncomeTests
     [Test]
     public void Get_Throws_IfIncomeDoesNotExist()
     {
-        var notExistedId = Seed.NotExistedIncomeId();
+        var notExistedId = Seed.NotExistedIncomeRecordId();
         
         Assert.That(async () =>
         {
@@ -69,7 +69,7 @@ public class IncomeTests
     public async Task GetByCardId_ReturnsIncomes()
     {
         var card = Seed.Cards[0];
-        var incomes = Seed.Incomes.Where(income => income.CardId == card.Id).ToList();
+        var incomes = Seed.IncomeRecords.Where(income => income.CardId == card.Id).ToList();
 
         var returnedIncomes = await _incomeService.GetByCardId(card.Id);
         
@@ -95,11 +95,11 @@ public class IncomeTests
     [Test]
     public async Task GetByCardId_ReturnsEmptyList_IfThereIsNoIncomes()
     {
-        var card = Seed.CardsWithoutIncomes[0];
+        var card = Seed.CardsWithoutIncomeRecords[0];
 
         var returnedIncomes = await _incomeService.GetByCardId(card.Id);
         
-        Assert.That(returnedIncomes, Is.TypeOf<List<Income>>());
+        Assert.That(returnedIncomes, Is.TypeOf<List<IncomeRecord>>());
         Assert.That(returnedIncomes, Has.Count.EqualTo(0));
     }
 
@@ -107,7 +107,7 @@ public class IncomeTests
     public async Task GetByCardIds_ReturnsIncomes()
     {
         var cardIds = Seed.Cards.Ids();
-        var incomes = Seed.Incomes.Where(income => cardIds.Contains(income.CardId)).ToList();
+        var incomes = Seed.IncomeRecords.Where(income => cardIds.Contains(income.CardId)).ToList();
         
         var returnedIncomes = await _incomeService.GetByCardIds(cardIds);
         
@@ -134,18 +134,18 @@ public class IncomeTests
     [Test]
     public async Task GetByCardIds_ReturnsEmptyList_IfThereIsNoIncomes()
     {
-        var cardIds = Seed.CardsWithoutIncomes.Ids();
+        var cardIds = Seed.CardsWithoutIncomeRecords.Ids();
 
         var returnedIncomes = await _incomeService.GetByCardIds(cardIds);
         
-        Assert.That(returnedIncomes, Is.TypeOf<List<Income>>());
+        Assert.That(returnedIncomes, Is.TypeOf<List<IncomeRecord>>());
         Assert.That(returnedIncomes, Has.Count.EqualTo(0));
     }
 
     [Test]
     public async Task Create_CreatesIncome()
     {
-        var dto = new CreateIncomeDto
+        var dto = new CreateIncomeRecordDto
         {
             Name = "New income",
             Amount = 100,
@@ -154,7 +154,7 @@ public class IncomeTests
 
         var id = await _incomeService.Create(dto);
 
-        var createdIncome = await _context.Incomes.GetById(id);
+        var createdIncome = await _context.IncomeRecords.GetById(id);
         Assert.That(createdIncome, Is.Not.Null);
         Assert.Multiple(() =>
         {
@@ -170,7 +170,7 @@ public class IncomeTests
     public async Task Create_IncreasesCardBalance()
     {
         var card = Seed.Cards[0];
-        var dto = new CreateIncomeDto
+        var dto = new CreateIncomeRecordDto
         {
             Name = "New income",
             Amount = 100,
@@ -186,7 +186,7 @@ public class IncomeTests
     [Test]
     public void Create_Throws_IfCardDoesNotExist()
     {
-        var dto = new CreateIncomeDto
+        var dto = new CreateIncomeRecordDto
         {
             Name = "New income",
             Amount = 100,
@@ -202,8 +202,8 @@ public class IncomeTests
     [Test]
     public async Task Update_ChangesName()
     {
-        var income = Seed.Incomes[0];
-        var dto = new UpdateIncomeDto
+        var income = Seed.IncomeRecords[0];
+        var dto = new UpdateIncomeRecordDto
         {
             Id = income.Id,
             Name = "New name",
@@ -212,17 +212,17 @@ public class IncomeTests
 
         await _incomeService.Update(dto);
 
-        var updatedIncome = await _context.Incomes.GetById(income.Id);
+        var updatedIncome = await _context.IncomeRecords.GetById(income.Id);
         Assert.That(updatedIncome.Name, Is.EqualTo(dto.Name));
     }
 
     [Test]
     public async Task Update_ChangesCardsBalance_IfCardIdIsChanged()
     {
-        var income = Seed.Incomes[0];
+        var income = Seed.IncomeRecords[0];
         var oldCard = Seed.Cards.Single(card => card.Id == income.CardId);
-        var newCard = Seed.CardsWithoutIncomes[0];
-        var dto = new UpdateIncomeDto
+        var newCard = Seed.CardsWithoutIncomeRecords[0];
+        var dto = new UpdateIncomeRecordDto
         {
             Id = income.Id,
             Name = income.Name,
@@ -243,9 +243,9 @@ public class IncomeTests
     [Test]
     public void Update_Throws_IfIncomeDoesNotExist()
     {
-        var dto = new UpdateIncomeDto
+        var dto = new UpdateIncomeRecordDto
         {
-            Id = Seed.NotExistedIncomeId(),
+            Id = Seed.NotExistedIncomeRecordId(),
             Name = "Some name",
             CardId = Seed.Cards[0].Id
         };
@@ -259,9 +259,9 @@ public class IncomeTests
     [Test]
     public void Update_Throws_IfCardIdDoesNotExist()
     {
-        var income = Seed.Incomes[0];
+        var income = Seed.IncomeRecords[0];
         var notExistedCardId = Seed.NotExistedCardId();
-        var dto = new UpdateIncomeDto
+        var dto = new UpdateIncomeRecordDto
         {
             Id = income.Id,
             Name = income.Name,
@@ -277,12 +277,12 @@ public class IncomeTests
     [Test]
     public void Update_Throws_IfOldCardBalanceIsLessThanIncomeAmount()
     {
-        var income = Seed.IncomeWithLargeAmount;
-        var dto = new UpdateIncomeDto
+        var income = Seed.IncomeRecordWithLargeAmount;
+        var dto = new UpdateIncomeRecordDto
         {
             Id = income.Id,
             Name = income.Name,
-            CardId = Seed.CardsWithoutIncomes[0].Id
+            CardId = Seed.CardsWithoutIncomeRecords[0].Id
         };
         
         Assert.That(async () =>
@@ -294,18 +294,18 @@ public class IncomeTests
     [Test]
     public async Task Delete_DeletesIncome()
     {
-        var incomeId = Seed.Incomes[0].Id;
+        var incomeId = Seed.IncomeRecords[0].Id;
 
         await _incomeService.Delete(incomeId);
 
-        var deletedIncome = await _context.Incomes.FindAsync(incomeId);
+        var deletedIncome = await _context.IncomeRecords.FindAsync(incomeId);
         Assert.That(deletedIncome, Is.Null);
     }
     
     [Test]
     public async Task Delete_ChangesCardBalance()
     {
-        var income = Seed.Incomes[0];
+        var income = Seed.IncomeRecords[0];
         var card = Seed.Cards.Single(card => card.Id == income.CardId);
         
         await _incomeService.Delete(income.Id);
@@ -317,7 +317,7 @@ public class IncomeTests
     [Test]
     public void Delete_Throws_IfIncomeDoesNotExist()
     {
-        var notExistedIncomeId = Seed.NotExistedIncomeId();
+        var notExistedIncomeId = Seed.NotExistedIncomeRecordId();
 
         Assert.That(async () =>
         {
@@ -328,7 +328,7 @@ public class IncomeTests
     [Test]
     public void Delte_Throws_IfCardBalanceIsLessThanIncomeAmount()
     {
-        var incomeId = Seed.IncomeWithLargeAmount.Id;
+        var incomeId = Seed.IncomeRecordWithLargeAmount.Id;
         
         Assert.That(async () =>
         {

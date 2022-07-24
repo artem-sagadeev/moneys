@@ -42,9 +42,9 @@ public class IndexModel : PageModel
         return RedirectToPage();
     }
     
-    public async Task<IActionResult> OnPostToOperations(CreatePaymentDto dto)
+    public async Task<IActionResult> OnPostToOperations(CreatePaymentRecordDto recordDto)
     {
-        await _operationsService.CreatePayment(User, dto);
+        await _operationsService.CreatePayment(User, recordDto);
 
         return RedirectToPage();
     }

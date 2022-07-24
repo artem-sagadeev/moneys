@@ -13,9 +13,9 @@ public class Card : IEntity, IUserBelonging
     
     public string UserId { get; set; }
     
-    public List<Payment> Payments { get; set; }
+    public List<PaymentRecord> PaymentRecords { get; set; }
     
-    public List<Income> Incomes { get; set; }
+    public List<IncomeRecord> IncomeRecords { get; set; }
 
     public Card(CreateCardDto dto)
     {

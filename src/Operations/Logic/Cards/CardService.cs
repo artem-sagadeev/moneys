@@ -46,7 +46,7 @@ public class CardService : ICardService
     {
         var card = await _context
             .Cards
-            .Include(card => card.Payments)
+            .Include(card => card.PaymentRecords)
             .SingleOrDefaultAsync(card => card.Id == dto.Id);
 
         if (card is null)
@@ -60,15 +60,15 @@ public class CardService : ICardService
     {
         var card = await _context
             .Cards
-            .Include(card => card.Payments)
-            .Include(card => card.Incomes)
+            .Include(card => card.PaymentRecords)
+            .Include(card => card.IncomeRecords)
             .SingleOrDefaultAsync(card => card.Id == id);
 
         if (card is null)
             throw new EntityNotFoundException();
         
-        _context.Payments.RemoveRange(card.Payments);
-        _context.Incomes.RemoveRange(card.Incomes);
+        _context.PaymentRecords.RemoveRange(card.PaymentRecords);
+        _context.IncomeRecords.RemoveRange(card.IncomeRecords);
         _context.Cards.Remove(card);
         await _context.SaveChangesAsync();
     }

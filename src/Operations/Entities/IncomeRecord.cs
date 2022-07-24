@@ -1,10 +1,9 @@
-using Common.Interfaces;
 using Operations.Dtos;
 using Operations.Interfaces;
 
 namespace Operations.Entities;
 
-public class Income : IOperation, IEntity
+public class IncomeRecord : IOperationRecord
 {
     public Guid Id { get; set; }
     
@@ -18,14 +17,20 @@ public class Income : IOperation, IEntity
     
     public Card Card { get; set; }
     
-    public Income(CreateIncomeDto dto)
+    public Guid? RegularIncomeId { get; set; }
+    
+    public RegularIncome RegularIncome { get; set; }
+
+    public bool IsRegularIncomeRecord => RegularIncomeId is not null;
+    
+    public IncomeRecord(CreateIncomeRecordDto recordDto)
     {
         Id = Guid.NewGuid();
-        Name = dto.Name;
-        Amount = dto.Amount;
+        Name = recordDto.Name;
+        Amount = recordDto.Amount;
         DateTime = DateTime.UtcNow;
-        CardId = dto.CardId;
+        CardId = recordDto.CardId;
     }
     
-    public Income() {}
+    public IncomeRecord() {}
 }

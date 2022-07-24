@@ -26,7 +26,7 @@ public class IndexModel : PageModel
     
     public int Sum { get; set; }
     
-    public List<IOperation> Operations { get; private set; }
+    public List<IOperationRecord> Operations { get; private set; }
 
     public async Task<IActionResult> OnGet()
     {
@@ -58,30 +58,30 @@ public class IndexModel : PageModel
         return Page();
     }
 
-    public async Task<IActionResult> OnPostPayment(CreatePaymentDto dto)
+    public async Task<IActionResult> OnPostPayment(CreatePaymentRecordDto recordDto)
     {
-        await _operationsService.CreatePayment(User, dto);
+        await _operationsService.CreatePayment(User, recordDto);
 
         return RedirectToPage();
     }
 
-    public async Task<IActionResult> OnPostIncome(CreateIncomeDto dto)
+    public async Task<IActionResult> OnPostIncome(CreateIncomeRecordDto recordDto)
     {
-        await _operationsService.CreateIncome(User, dto);
-
-        return RedirectToPage();
-    }
-    
-    public async Task<IActionResult> OnPostUpdatePayment(UpdatePaymentDto dto)
-    {
-        await _operationsService.UpdatePayment(User, dto);
+        await _operationsService.CreateIncome(User, recordDto);
 
         return RedirectToPage();
     }
     
-    public async Task<IActionResult> OnPostUpdateIncome(UpdateIncomeDto dto)
+    public async Task<IActionResult> OnPostUpdatePayment(UpdatePaymentRecordDto recordDto)
     {
-        await _operationsService.UpdateIncome(User, dto);
+        await _operationsService.UpdatePayment(User, recordDto);
+
+        return RedirectToPage();
+    }
+    
+    public async Task<IActionResult> OnPostUpdateIncome(UpdateIncomeRecordDto recordDto)
+    {
+        await _operationsService.UpdateIncome(User, recordDto);
 
         return RedirectToPage();
     }

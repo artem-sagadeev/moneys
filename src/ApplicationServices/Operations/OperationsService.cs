@@ -37,7 +37,7 @@ public class OperationsService : IOperationsService
         return userCards;
     }
 
-    public async Task<List<IOperation>> GetAllUserOperations(ClaimsPrincipal user)
+    public async Task<List<IOperationRecord>> GetAllUserOperations(ClaimsPrincipal user)
     {
         var userCards = await GetAllUserCards(user);
         var userCardIds = userCards.Ids();
@@ -46,14 +46,14 @@ public class OperationsService : IOperationsService
         var incomes = await _incomeService.GetByCardIds(userCardIds);
 
         var operations = payments
-            .Select(payment => (IOperation)payment)
+            .Select(payment => (IOperationRecord)payment)
             .Concat(incomes)
             .ToList();
 
         return operations;
     }
 
-    public async Task<List<IOperation>> GetUserOperationsByCardIds(ClaimsPrincipal user, List<Guid> cardIds)
+    public async Task<List<IOperationRecord>> GetUserOperationsByCardIds(ClaimsPrincipal user, List<Guid> cardIds)
     {
         var userCards = await GetAllUserCards(user);
         if (cardIds.Any(cardId => !userCards.Ids().Contains(cardId)))
@@ -63,43 +63,43 @@ public class OperationsService : IOperationsService
         var incomes = await _incomeService.GetByCardIds(cardIds);
 
         var operations = payments
-            .Select(payment => (IOperation)payment)
+            .Select(payment => (IOperationRecord)payment)
             .Concat(incomes)
             .ToList();
 
         return operations;
     }
 
-    public async Task CreatePayment(ClaimsPrincipal user, CreatePaymentDto dto)
+    public async Task CreatePayment(ClaimsPrincipal user, CreatePaymentRecordDto recordDto)
     {
-        if (!await HasUserAccessToCard(user, dto.CardId))
+        if (!await HasUserAccessToCard(user, recordDto.CardId))
             throw new NoAccessException();
         
-        await _paymentService.Create(dto);
+        await _paymentService.Create(recordDto);
     }
     
-    public async Task CreateIncome(ClaimsPrincipal user, CreateIncomeDto dto)
+    public async Task CreateIncome(ClaimsPrincipal user, CreateIncomeRecordDto recordDto)
     {
-        if (!await HasUserAccessToCard(user, dto.CardId))
+        if (!await HasUserAccessToCard(user, recordDto.CardId))
             throw new NoAccessException();
         
-        await _incomeService.Create(dto);
+        await _incomeService.Create(recordDto);
     }
 
-    public async Task UpdatePayment(ClaimsPrincipal user, UpdatePaymentDto dto)
+    public async Task UpdatePayment(ClaimsPrincipal user, UpdatePaymentRecordDto recordDto)
     {
-        if (!await HasUserAccessToPayment(user, dto.Id) || !await HasUserAccessToCard(user, dto.CardId))
+        if (!await HasUserAccessToPayment(user, recordDto.Id) || !await HasUserAccessToCard(user, recordDto.CardId))
             throw new NoAccessException();
         
-        await _paymentService.Update(dto);
+        await _paymentService.Update(recordDto);
     }
 
-    public async Task UpdateIncome(ClaimsPrincipal user, UpdateIncomeDto dto)
+    public async Task UpdateIncome(ClaimsPrincipal user, UpdateIncomeRecordDto recordDto)
     {
-        if (!await HasUserAccessToIncome(user, dto.Id) || !await HasUserAccessToCard(user, dto.CardId))
+        if (!await HasUserAccessToIncome(user, recordDto.Id) || !await HasUserAccessToCard(user, recordDto.CardId))
             throw new NoAccessException();
         
-        await _incomeService.Update(dto);
+        await _incomeService.Update(recordDto);
     }
 
     public async Task DeletePayment(ClaimsPrincipal user, Guid paymentId)

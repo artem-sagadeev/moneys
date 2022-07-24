@@ -1,6 +1,6 @@
 namespace Operations.Dtos;
 
-public class UpdateIncomeDto
+public class UpdateIncomeRecordDto
 {
     public Guid Id { get; set; }
     
