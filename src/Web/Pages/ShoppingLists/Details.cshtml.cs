@@ -30,8 +30,8 @@ public class DetailsModel : PageModel
         var userCards = await _operationsService.GetAllUserCards(User);
         
         ShoppingList = shoppingList;
-        ShoppingList.ListItems = shoppingList.ListItems.OrderBy(item => item.CreationTime).ToList();
-        AllCards = userCards.OrderBy(card => card.Name).ToList();
+        ShoppingList.ListItems = shoppingList?.ListItems.OrderBy(item => item.CreationTime).ToList();
+        AllCards = userCards?.OrderBy(card => card.Name).ToList();
         
         return Page();
     }

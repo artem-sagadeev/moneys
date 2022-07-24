@@ -33,11 +33,12 @@ public class IndexModel : PageModel
         var userCards = await _operationsService.GetAllUserCards(User);
         var operations = await _operationsService.GetAllUserOperations(User);
 
-        AllCards = userCards.OrderBy(card => card.Name).ToList();
-        CheckedCardIds = AllCards.Select(card => card.Id).ToList();
-        CardNames = AllCards.ToDictionary(card => card.Id, card => card.Name);
-        Sum = AllCards.Where(card => CheckedCardIds.Contains(card.Id)).Select(card => card.Balance).Sum();
-        Operations = operations.OrderByDescending(operation => operation.DateTime).ToList();
+        AllCards = userCards?.OrderBy(card => card.Name).ToList();
+        CheckedCardIds = AllCards?.Select(card => card.Id).ToList();
+        CardNames = AllCards?.ToDictionary(card => card.Id, card => card.Name);
+        Sum = AllCards is not null ? 
+            AllCards.Where(card => CheckedCardIds.Contains(card.Id)).Select(card => card.Balance).Sum() : 0;
+        Operations = operations?.OrderByDescending(operation => operation.DateTime).ToList();
 
         return Page();
     }
@@ -47,11 +48,12 @@ public class IndexModel : PageModel
         var userCards = await _operationsService.GetAllUserCards(User);
         var operations = await _operationsService.GetUserOperationsByCardIds(User, cardIds);
 
-        AllCards = userCards.OrderBy(card => card.Name).ToList();
+        AllCards = userCards?.OrderBy(card => card.Name).ToList();
         CheckedCardIds = cardIds;
-        CardNames = AllCards.ToDictionary(card => card.Id, card => card.Name);
-        Sum = AllCards.Where(card => CheckedCardIds.Contains(card.Id)).Select(card => card.Balance).Sum();
-        Operations = operations.OrderByDescending(operation => operation.DateTime).ToList();
+        CardNames = AllCards?.ToDictionary(card => card.Id, card => card.Name);
+        Sum = AllCards is not null ? 
+            AllCards.Where(card => CheckedCardIds.Contains(card.Id)).Select(card => card.Balance).Sum() : 0;
+        Operations = operations?.OrderByDescending(operation => operation.DateTime).ToList();
 
         return Page();
     }
