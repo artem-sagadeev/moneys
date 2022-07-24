@@ -37,16 +37,16 @@ public class IncomeService : IIncomeService
 
     public async Task<List<Income>> GetByCardIds(List<Guid> cardIds)
     {
-        var cardsWithIncomes = await _context
+        var cards = await _context
             .Cards
             .Include(card => card.Incomes)
             .Where(card => cardIds.Contains(card.Id))
             .ToListAsync();
 
-        if (cardsWithIncomes.Count != cardIds.Count)
+        if (cards.Count != cardIds.Count)
             throw new EntityNotFoundException();
 
-        var incomes = cardsWithIncomes
+        var incomes = cards
             .SelectMany(card => card.Incomes)
             .ToList();
         

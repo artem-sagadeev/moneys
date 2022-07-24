@@ -37,6 +37,7 @@ public class IncomeTests
     public void TearDown()
     {
         _context.Incomes.RemoveRange(_context.Incomes);
+        _context.Payments.RemoveRange(_context.Payments);
         _context.Cards.RemoveRange(_context.Cards);
         _context.SaveChanges();
         _context.Dispose();

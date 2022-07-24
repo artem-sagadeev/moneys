@@ -27,5 +27,5 @@ public class Payment : IOperation, IEntity
         CardId = dto.CardId;
     }
     
-    private Payment() {}
+    public Payment() {}
 }
