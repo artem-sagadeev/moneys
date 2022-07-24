@@ -29,8 +29,8 @@ public class IndexModel : PageModel
         var shoppingListsWithItems = await _shoppingListsService.GetAllUserShoppingListsWithItems(User);
         var userCards = await _operationsService.GetAllUserCards(User);
 
-        ShoppingListsWithItems = shoppingListsWithItems.OrderByDescending(list => list.CreationTime).ToList();
-        AllCards = userCards.OrderBy(card => card.Name).ToList();
+        ShoppingListsWithItems = shoppingListsWithItems?.OrderByDescending(list => list.CreationTime).ToList();
+        AllCards = userCards?.OrderBy(card => card.Name).ToList();
 
         return Page();
     }

@@ -29,7 +29,7 @@ public class IndexModel : PageModel
         var cards = await _operationsService.GetAllUserCards(User);
         
         Profile = user;
-        Cards = cards.OrderBy(card => card.Name).ToList();
+        Cards = cards?.OrderBy(card => card.Name).ToList();
         
         return Page();
     }
