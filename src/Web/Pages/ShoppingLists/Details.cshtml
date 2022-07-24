@@ -2,15 +2,13 @@
 @model Web.Pages.ShoppingLists.DetailsModel
 
 <div class="d-flex mb-3">
-    <div class="p-2 h4"><p>@Model.ShoppingList.Name</p></div>
+    <div class="p-2 h4">@Model.ShoppingList.Name, Sum: @Model.ShoppingList.ListItems.Sum(item => item.Price * item.Count)</div>
     <div class="p-2">
         <button type="button" class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#addListItemModal" style="width: 5rem;">
             Add
         </button>
     </div>
 </div>
-
-
 
 <table class="table">
     <thead>
@@ -62,14 +60,12 @@
             </td>
             <td>
                 <div>
-                    <form method="POST">
-                        <button type="submit" class="btn btn-dark" asp-page-handler="ToOperations" asp-route-id="@item.Id">To Operations</button>
-                    </form>
+                    <button type="button" class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#@string.Concat("toOperations", item.Id)">To Operations</button>
                 </div>
             </td>
             <td>
                 <div>
-                    <button type="button" class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#updateListItemModal">Update</button>
+                    <button type="button" class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#@string.Concat("updateListItem", item.Id)">Update</button>
                 </div>
             </td>
             <td>
@@ -82,6 +78,7 @@
         </tr>
 
         <partial name="UpdateListItemPartial" model="item"/>
+        <partial name="ListItemToOperationsPartial" model="(item, Model.AllCards)"/>
     }
     </tbody>
 </table>

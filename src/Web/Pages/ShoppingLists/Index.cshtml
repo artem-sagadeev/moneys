@@ -17,11 +17,15 @@
             <div class="card-body hstack gap-4">
                 <div class="fs-5"><a asp-page="Details" asp-route-id="@shoppingList.Id">@shoppingList.Name</a></div>
                 <div class="fs-5 ms-auto">Items: @shoppingList.ListItems.Count</div>
+                <div class="fs-5">Sum: @shoppingList.ListItems.Sum(item => item.Price * item.Count)</div>
                 <div class="fs-5">Created: @shoppingList.CreationTime</div>
                 <div>
                     <button type="button" class="btn btn-dark" data-bs-toggle="offcanvas" data-bs-target="#@string.Concat("id", shoppingList.Id)" aria-controls="@string.Concat("id", shoppingList.Id)">
                         Preview
                     </button>
+                </div>
+                <div>
+                    <button type="button" class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#@string.Concat("toOperations", shoppingList.Id)">To Operations</button>
                 </div>
                 <div>
                     <button type="button" class="btn btn-dark" onclick="updateShoppingList('@shoppingList.Name', '@shoppingList.Id')" data-bs-toggle="modal" data-bs-target="#updateShoppingListModal">Update</button>
@@ -36,6 +40,8 @@
         <div class="offcanvas offcanvas-start" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1" id="@string.Concat("id", shoppingList.Id)" aria-labelledby="offcanvasScrollingLabel">
             <partial name="ShoppingListPreviewPartial" model="@shoppingList"/>
         </div>
+        
+        <partial name="ShoppingListToOperationsPartial" model="(shoppingList, Model.AllCards)"/>
     }
 </div>
 

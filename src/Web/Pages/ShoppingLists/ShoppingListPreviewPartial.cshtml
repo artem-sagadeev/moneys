@@ -12,6 +12,8 @@
             <th scope="col"></th>
             <th scope="col">Name</th>
             <th scope="col">Price</th>
+            <th scope="col">Count</th>
+            <th scope="col">Sum</th>
         </tr>
         </thead>
         <tbody>
@@ -30,6 +32,8 @@
                     </th>
                     <td>@item.Name</td>
                     <td>@item.Price</td>
+                    <td>@item.Count</td>
+                    <td>@(item.Price * item.Count)</td>
                 </tr>
             }
         </tbody>
