@@ -37,11 +37,19 @@ public class IncomeService : IIncomeService
 
     public async Task<List<Income>> GetByCardIds(List<Guid> cardIds)
     {
-        var incomes = await _context
-            .Incomes
-            .Where(income => cardIds.Contains(income.CardId))
+        var cards = await _context
+            .Cards
+            .Include(card => card.Incomes)
+            .Where(card => cardIds.Contains(card.Id))
             .ToListAsync();
 
+        if (cards.Count != cardIds.Count)
+            throw new EntityNotFoundException();
+
+        var incomes = cards
+            .SelectMany(card => card.Incomes)
+            .ToList();
+        
         return incomes;
     }
 
@@ -88,6 +96,9 @@ public class IncomeService : IIncomeService
         if (income is null)
             throw new EntityNotFoundException();
 
+        if (income.Card.Balance < income.Amount)
+            throw new NotEnoughMoneyException();
+        
         income.Card.Balance -= income.Amount;
         _context.Incomes.Remove(income);
         await _context.SaveChangesAsync();

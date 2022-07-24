@@ -37,11 +37,19 @@ public class PaymentService : IPaymentService
 
     public async Task<List<Payment>> GetByCardIds(List<Guid> cardIds)
     {
-        var payments = await _context
-            .Payments
-            .Where(payment => cardIds.Contains(payment.CardId))
+        var cards = await _context
+            .Cards
+            .Include(card => card.Payments)
+            .Where(card => cardIds.Contains(card.Id))
             .ToListAsync();
 
+        if (cards.Count != cardIds.Count)
+            throw new EntityNotFoundException();
+
+        var payments = cards
+            .SelectMany(card => card.Payments)
+            .ToList();
+        
         return payments;
     }
 

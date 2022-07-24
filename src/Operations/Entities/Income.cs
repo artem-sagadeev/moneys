@@ -27,5 +27,5 @@ public class Income : IOperation, IEntity
         CardId = dto.CardId;
     }
     
-    private Income() {}
+    public Income() {}
 }
