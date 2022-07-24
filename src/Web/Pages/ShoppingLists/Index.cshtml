@@ -28,7 +28,7 @@
                     <button type="button" class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#@string.Concat("toOperations", shoppingList.Id)">To Operations</button>
                 </div>
                 <div>
-                    <button type="button" class="btn btn-dark" onclick="updateShoppingList('@shoppingList.Name', '@shoppingList.Id')" data-bs-toggle="modal" data-bs-target="#updateShoppingListModal">Update</button>
+                    <button type="button" class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#@string.Concat("updateShoppingList", shoppingList.Id)">Update</button>
                 </div>
                 <div>
                     <form method="POST">
@@ -42,61 +42,8 @@
         </div>
         
         <partial name="ShoppingListToOperationsPartial" model="(shoppingList, Model.AllCards)"/>
+        <partial name="UpdateShoppingListPartial" model="shoppingList"/>
     }
 </div>
 
-<!-- Add Shopping List Modal -->
-<div class="modal fade" id="addShoppingListModal" tabindex="-1" aria-labelledby="addShoppingListModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <form method="POST" asp-page-handler="ShoppingList">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="addShoppingListModalLabel">Add Shopping List</h5>
-                    <button type="button" class="btn-close btn-close-dark" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="mb-3">
-                        <label for="addShoppingListName" class="form-label">Name</label>
-                        <input type="text" class="form-control input-dark" id="addShoppingListName" name="name" autocomplete="off">
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-dark">Save</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-
-<!-- Update Shopping List Modal -->
-<div class="modal fade" id="updateShoppingListModal" tabindex="-1" aria-labelledby="updateShoppingListModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <form method="POST" asp-page-handler="UpdateShoppingList">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="updateShoppingListModalLabel">Update Shopping List</h5>
-                    <button type="button" class="btn-close btn-close-dark" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="mb-3">
-                        <label for="updateShoppingListName" class="form-label">Name</label>
-                        <input type="text" class="form-control input-dark" id="updateShoppingListName" name="name" autocomplete="off">
-                    </div>
-                    <input type="hidden" name="id" id="updateShoppingListId"/>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-dark">Save</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-
-<script>  
-let updateShoppingList = function (shoppingListName, shoppingListId) {
-    document.getElementById("updateShoppingListName").value = shoppingListName;
-    document.getElementById("updateShoppingListId").value = shoppingListId;
-}
-</script>
+<partial name="AddShoppingListPartial"/>
