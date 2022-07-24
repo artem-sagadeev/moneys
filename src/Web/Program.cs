@@ -45,7 +45,7 @@ builder.Services.AddDbContext<IdentityContext>(options =>
 });
 
 builder.Services.AddScoped<IShoppingListService, ShoppingListService>();
-builder.Services.AddScoped<IListItemsService, ListItemsService>();
+builder.Services.AddScoped<IListItemService, ListItemService>();
 builder.Services.AddDbContext<ShoppingListsContext>(options =>
 {
     options.UseNpgsql(connectionString, npgsqlOptions => 

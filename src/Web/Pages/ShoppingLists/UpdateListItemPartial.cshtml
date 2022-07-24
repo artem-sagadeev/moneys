@@ -1,0 +1,34 @@
+﻿@using ListItem = global::ShoppingLists.Entities.ListItem
+@model ListItem
+
+<div class="modal fade" id="updateListItemModal" tabindex="-1" aria-labelledby="updateListItemModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="POST" asp-page-handler="UpdateListItem">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="updateListItemModalLabel">Update List Item</h5>
+                    <button type="button" class="btn-close btn-close-dark" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="updateListItemName" class="form-label">Name</label>
+                        <input type="text" class="form-control input-dark" id="updateListItemName" name="name" autocomplete="off" value="@Model.Name">
+                    </div>
+                    <div class="mb-3">
+                        <label for="updateListItemPrice" class="form-label">Price</label>
+                        <input type="number" class="form-control input-dark" id="updateListItemPrice" name="price" autocomplete="off" value="@Model.Price">
+                    </div>
+                    <div class="mb-3">
+                        <label for="updateListItemCount" class="form-label">Count</label>
+                        <input type="number" class="form-control input-dark" id="updateListItemCount" name="count" autocomplete="off" value="@Model.Count">
+                    </div>
+                    <input type="hidden" name="id" value="@Model.Id"/>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-dark">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

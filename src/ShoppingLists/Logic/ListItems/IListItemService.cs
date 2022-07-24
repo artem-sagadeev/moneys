@@ -3,8 +3,10 @@ using ShoppingLists.Entities;
 
 namespace ShoppingLists.Logic.ListItems;
 
-public interface IListItemsService
+public interface IListItemService
 {
+    public Task<ListItem> GetById(Guid id);
+
     public Task<List<ListItem>> GetByShoppingListId(Guid shoppingListId);
 
     public Task Create(CreateListItemDto dto);

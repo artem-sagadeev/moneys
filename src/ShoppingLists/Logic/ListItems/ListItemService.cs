@@ -6,13 +6,20 @@ using ShoppingLists.Entities;
 
 namespace ShoppingLists.Logic.ListItems;
 
-public class ListItemsService : IListItemsService
+public class ListItemService : IListItemService
 {
     private readonly ShoppingListsContext _context;
 
-    public ListItemsService(ShoppingListsContext context)
+    public ListItemService(ShoppingListsContext context)
     {
         _context = context;
+    }
+
+    public async Task<ListItem> GetById(Guid id)
+    {
+        var listItem = await _context.ListItems.GetById(id);
+
+        return listItem;
     }
 
     public async Task<List<ListItem>> GetByShoppingListId(Guid shoppingListId)
