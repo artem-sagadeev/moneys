@@ -1,0 +1,42 @@
+﻿@using global::ShoppingLists.Entities
+@model ShoppingList
+
+<div class="offcanvas-header">
+    <h5 class="offcanvas-title">@Model.Name</h5>
+    <button type="button" class="btn-close btn-close-dark" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+</div>
+<div class="offcanvas-body">
+    <table class="table">
+        <thead>
+        <tr>
+            <th scope="col"></th>
+            <th scope="col">Name</th>
+            <th scope="col">Price</th>
+            <th scope="col">Count</th>
+            <th scope="col">Sum</th>
+        </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.ListItems)
+            {
+                <tr>
+                    <th scope="row">
+                        @if (item.IsPurchased)
+                        {
+                            <input type="checkbox" class="form-check-input checkbox-dark" checked disabled/> 
+                        }
+                        else
+                        {
+                            <input type="checkbox" class="form-check-input checkbox-dark" disabled/> 
+                        }
+                    </th>
+                    <td>@item.Name</td>
+                    <td>@item.Price</td>
+                    <td>@item.Count</td>
+                    <td>@(item.Price * item.Count)</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+

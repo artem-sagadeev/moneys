@@ -1,0 +1,50 @@
+﻿@using Card = global::Operations.Entities.Card
+@model List<Card>
+
+<div class="modal fade" id="addPaymentModal" tabindex="-1" aria-labelledby="addPaymentModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="POST" asp-page-handler="Payment">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addPaymentModalLabel">Add Payment</h5>
+                    <button type="button" class="btn-close btn-close-dark" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="paymentNameLabel" class="form-label">Name</label>
+                        <input type="text" class="form-control input-dark" id="paymentNameLabel" name="name" autocomplete="off">
+                    </div>
+                    <div class="mb-3">
+                        <label for="paymentAmountLabel" class="form-label">Amount</label>
+                        <input type="number" class="form-control input-dark" id="paymentAmountLabel" name="amount" autocomplete="off">
+                    </div>
+                    
+                    <div class="dropdown mb-3">
+                        @* ReSharper disable once Html.IdDuplication *@
+                        <button class="btn btn-outline-dark dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" id="dropdownMenuClickableInside" data-bs-auto-close="outside">
+                            Select cards
+                        </button>
+                        <div class="dropdown-menu p-2">
+                                @foreach (var card in Model)
+                                {
+                                    <div class="mb-1">
+                                        <div class="form-check form-check-inline">
+                                            <input type="radio" class="form-check-input checkbox-dark" id="card" name="cardId" value="@card.Id">
+                                            <label class="form-check-label" for="card">
+                                                @card.Name, balance: @card.Balance
+                                            </label>
+                                        </div>
+                                    </div>
+                                }
+                        </div>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-dark">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

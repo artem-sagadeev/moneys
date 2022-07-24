@@ -3,7 +3,7 @@ using Operations.Dtos;
 
 namespace Operations.Entities;
 
-public class Card : IEntity
+public class Card : IEntity, IUserBelonging
 {
     public Guid Id { get; set; }
     

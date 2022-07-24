@@ -1,0 +1,86 @@
+﻿@page
+@model Web.Pages.ShoppingLists.DetailsModel
+
+<div class="d-flex mb-3">
+    <div class="p-2 h4">@Model.ShoppingList.Name, Sum: @Model.ShoppingList.ListItems.Sum(item => item.Price * item.Count)</div>
+    <div class="p-2">
+        <button type="button" class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#addListItemModal" style="width: 5rem;">
+            Add
+        </button>
+    </div>
+</div>
+
+<table class="table">
+    <thead>
+    <tr>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col">Price</th>
+        <th class="col">Count</th>
+        <th class="col">Sum</th>
+        <th class="col"></th>
+        <th class="col"></th>
+        <th class="col"></th>
+        <th class="col"></th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var item in Model.ShoppingList.ListItems)
+    {
+        <tr>
+            <th scope="row">
+                @if (item.IsPurchased)
+                {
+                    <input type="checkbox" class="form-check-input checkbox-dark" disabled checked/> 
+                }
+                else
+                {
+                    <input type="checkbox" class="form-check-input checkbox-dark" disabled/> 
+                }
+            </th>
+            <td>@item.Name</td>
+            <td>@item.Price</td>
+            <td>@item.Count</td>
+            <td>@(item.Price * item.Count)</td>
+            <td>
+                <div>
+                    @if (item.IsPurchased)
+                    {
+                        <form method="POST">
+                            <button type="submit" class="btn btn-dark" asp-page-handler="CancelPurchase" asp-route-id="@item.Id">Cancel Purchase</button>
+                        </form>
+                    }
+                    else
+                    {
+                        <form method="POST">
+                            <button type="submit" class="btn btn-dark" asp-page-handler="Purchase" asp-route-id="@item.Id">Purchase</button>
+                        </form>
+                    }
+                </div>
+            </td>
+            <td>
+                <div>
+                    <button type="button" class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#@string.Concat("toOperations", item.Id)">To Operations</button>
+                </div>
+            </td>
+            <td>
+                <div>
+                    <button type="button" class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#@string.Concat("updateListItem", item.Id)">Update</button>
+                </div>
+            </td>
+            <td>
+                <div>
+                    <form method="POST">
+                        <button type="submit" class="btn btn-dark" asp-page-handler="DeleteListItem" asp-route-id="@item.Id">Delete</button>
+                    </form>
+                </div>
+            </td>
+        </tr>
+
+        <partial name="UpdateListItemPartial" model="item"/>
+        <partial name="ListItemToOperationsPartial" model="(item, Model.AllCards)"/>
+    }
+    </tbody>
+</table>
+
+<partial name="AddListItemPartial" model="Model.ShoppingList.Id"/>

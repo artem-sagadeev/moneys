@@ -1,5 +1,7 @@
 using ApplicationServices.Identity;
 using ApplicationServices.Operations;
+using ApplicationServices.ShoppingLists;
+using Common.Helpers;
 using Identity.Data;
 using Identity.Entities;
 using Identity.Logic;
@@ -9,8 +11,14 @@ using Operations.Data;
 using Operations.Logic.Cards;
 using Operations.Logic.Incomes;
 using Operations.Logic.Payments;
+using ShoppingLists.Data;
+using ShoppingLists.Logic.ListItems;
+using ShoppingLists.Logic.ShoppingLists;
 
 var builder = WebApplication.CreateBuilder(args);
+var connectionString = builder.Environment.IsEnvironment(Environments.Development)
+    ? builder.Configuration.GetConnectionString("Local")
+    : ConnectionStringConverter.ConvertFromUrl(Environment.GetEnvironmentVariable("DATABASE_URL")!);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
@@ -20,7 +28,7 @@ builder.Services.AddScoped<IPaymentService, PaymentService>();
 builder.Services.AddScoped<ICardService, CardService>();
 builder.Services.AddDbContext<OperationsContext>(options =>
 {
-    options.UseNpgsql(builder.Configuration.GetConnectionString("Local"), npgsqlOptions => 
+    options.UseNpgsql(connectionString, npgsqlOptions => 
         npgsqlOptions.MigrationsAssembly("Operations"));
 });
 
@@ -32,22 +40,32 @@ builder.Services.AddIdentity<User, IdentityRole>(options =>
 }).AddEntityFrameworkStores<IdentityContext>();
 builder.Services.AddDbContext<IdentityContext>(options =>
 {
-    options.UseNpgsql(builder.Configuration.GetConnectionString("Local"), npgsqlOptions => 
+    options.UseNpgsql(connectionString, npgsqlOptions => 
         npgsqlOptions.MigrationsAssembly("Identity"));
+});
+
+builder.Services.AddScoped<IShoppingListService, ShoppingListService>();
+builder.Services.AddScoped<IListItemService, ListItemService>();
+builder.Services.AddDbContext<ShoppingListsContext>(options =>
+{
+    options.UseNpgsql(connectionString, npgsqlOptions => 
+        npgsqlOptions.MigrationsAssembly("ShoppingLists"));
 });
 
 builder.Services.AddScoped<IOperationsService, OperationsService>();
 builder.Services.AddScoped<IIdentityService, IdentityService>();
+builder.Services.AddScoped<IShoppingListsService, ShoppingListsService>();
 
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
-    app.UseExceptionHandler("/Error");
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
+
+app.UseExceptionHandler("/Error");
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
