@@ -6,7 +6,7 @@ using Operations.Dtos;
 using Operations.Entities;
 using Operations.Interfaces;
 
-namespace Web.Pages.Operations;
+namespace Web.Pages.Operations.Single;
 
 [Authorize]
 public class IndexModel : PageModel
