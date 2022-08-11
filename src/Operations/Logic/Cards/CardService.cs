@@ -3,7 +3,7 @@ using Common.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Operations.Data;
 using Operations.Dtos;
-using Operations.Dtos.Card;
+using Operations.Dtos.Cards;
 using Operations.Entities;
 
 namespace Operations.Logic.Cards;

@@ -1,5 +1,5 @@
 ﻿using Operations.Dtos;
-using Operations.Dtos.RegularPayment;
+using Operations.Dtos.RegularPayments;
 using Operations.Enums;
 using Operations.Interfaces;
 using Operations.Logic;

@@ -1,5 +1,5 @@
 ﻿using Operations.Dtos;
-using Operations.Dtos.RegularIncome;
+using Operations.Dtos.RegularIncomes;
 using Operations.Entities;
 
 namespace Operations.Logic.Incomes;
@@ -17,4 +17,6 @@ public interface IRegularIncomeService
     public Task Update(UpdateRegularIncomeDto dto);
 
     public Task Delete(Guid id, bool removeIncomeRecords);
+
+    public Task PerformRegularIncomes();
 }

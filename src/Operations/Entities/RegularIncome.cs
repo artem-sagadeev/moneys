@@ -1,5 +1,5 @@
 ﻿using Operations.Dtos;
-using Operations.Dtos.RegularIncome;
+using Operations.Dtos.RegularIncomes;
 using Operations.Enums;
 using Operations.Interfaces;
 using Operations.Logic;
@@ -25,6 +25,8 @@ public class RegularIncome : IRegularOperation
     public DateTime NextExecution { get; set; }
     
     public List<IncomeRecord> IncomeRecords { get; set; }
+    
+    public List<PaymentRecord> PaymentRecords { get; set; }
 
     public RegularIncome(CreateRegularIncomeDto dto)
     {

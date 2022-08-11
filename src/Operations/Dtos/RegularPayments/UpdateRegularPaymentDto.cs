@@ -1,7 +1,9 @@
-namespace Operations.Dtos.IncomeRecord;
+﻿namespace Operations.Dtos.RegularPayments;
 
-public class CreateIncomeRecordDto
+public class UpdateRegularPaymentDto
 {
+    public Guid Id { get; set; }
+    
     public string Name { get; set; }
     
     public int Amount { get; set; }

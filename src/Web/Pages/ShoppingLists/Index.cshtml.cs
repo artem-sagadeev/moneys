@@ -3,7 +3,7 @@ using ApplicationServices.ShoppingLists;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Operations.Dtos;
-using Operations.Dtos.PaymentRecord;
+using Operations.Dtos.PaymentRecords;
 using Operations.Entities;
 using ShoppingLists.Dtos;
 using ShoppingLists.Entities;

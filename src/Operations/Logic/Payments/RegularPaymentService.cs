@@ -2,7 +2,8 @@
 using Common.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Operations.Data;
-using Operations.Dtos.RegularPayment;
+using Operations.Dtos.PaymentRecords;
+using Operations.Dtos.RegularPayments;
 using Operations.Entities;
 
 namespace Operations.Logic.Payments;
@@ -10,10 +11,12 @@ namespace Operations.Logic.Payments;
 public class RegularPaymentService : IRegularPaymentService
 {
     private readonly OperationsContext _context;
+    private readonly IPaymentRecordService _paymentRecordService;
 
-    public RegularPaymentService(OperationsContext context)
+    public RegularPaymentService(OperationsContext context, IPaymentRecordService paymentRecordService)
     {
         _context = context;
+        _paymentRecordService = paymentRecordService;
     }
     
     public async Task<RegularPayment> Get(Guid id)
@@ -96,5 +99,19 @@ public class RegularPaymentService : IRegularPaymentService
         
         _context.RegularPayments.Remove(regularPayment);
         await _context.SaveChangesAsync();
+    }
+
+    public async Task PerformRegularPayments()
+    {
+        var regularPayments = await _context
+            .RegularPayments
+            .Where(regularPayment => regularPayment.IsActive && DateTime.Now > regularPayment.NextExecution)
+            .ToListAsync();
+
+        foreach (var regularPayment in regularPayments)
+        {
+            await _paymentRecordService.Create(new CreatePaymentRecordDto(regularPayment));
+            regularPayment.NextExecution = FrequencyHelper.CalculateNextExecution(DateTime.Now, regularPayment.Frequency);
+        }
     }
 }

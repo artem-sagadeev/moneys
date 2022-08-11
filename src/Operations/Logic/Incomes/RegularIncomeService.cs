@@ -2,8 +2,8 @@
 using Common.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Operations.Data;
-using Operations.Dtos;
-using Operations.Dtos.RegularIncome;
+using Operations.Dtos.IncomeRecords;
+using Operations.Dtos.RegularIncomes;
 using Operations.Entities;
 
 namespace Operations.Logic.Incomes;
@@ -11,10 +11,12 @@ namespace Operations.Logic.Incomes;
 public class RegularIncomeService : IRegularIncomeService
 {
     private readonly OperationsContext _context;
+    private readonly IIncomeRecordService _incomeRecordService;
 
-    public RegularIncomeService(OperationsContext context)
+    public RegularIncomeService(OperationsContext context, IIncomeRecordService incomeRecordService)
     {
         _context = context;
+        _incomeRecordService = incomeRecordService;
     }
 
     public async Task<RegularIncome> Get(Guid id)
@@ -97,5 +99,19 @@ public class RegularIncomeService : IRegularIncomeService
         
         _context.RegularIncomes.Remove(regularIncome);
         await _context.SaveChangesAsync();
+    }
+
+    public async Task PerformRegularIncomes()
+    {
+        var regularIncomes = await _context
+            .RegularIncomes
+            .Where(regularIncome => regularIncome.IsActive && DateTime.Now > regularIncome.NextExecution)
+            .ToListAsync();
+
+        foreach (var regularIncome in regularIncomes)
+        {
+            await _incomeRecordService.Create(new CreateIncomeRecordDto(regularIncome));
+            regularIncome.NextExecution = FrequencyHelper.CalculateNextExecution(DateTime.Now, regularIncome.Frequency);
+        }
     }
 }

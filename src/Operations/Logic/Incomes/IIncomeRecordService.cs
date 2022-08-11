@@ -1,5 +1,5 @@
 using Operations.Dtos;
-using Operations.Dtos.IncomeRecord;
+using Operations.Dtos.IncomeRecords;
 using Operations.Entities;
 
 namespace Operations.Logic.Incomes;

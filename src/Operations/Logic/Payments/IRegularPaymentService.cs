@@ -1,4 +1,4 @@
-﻿using Operations.Dtos.RegularPayment;
+﻿using Operations.Dtos.RegularPayments;
 using Operations.Entities;
 
 namespace Operations.Logic.Payments;
@@ -16,4 +16,6 @@ public interface IRegularPaymentService
     public Task Update(UpdateRegularPaymentDto dto);
 
     public Task Delete(Guid id, bool removePaymentRecords);
+
+    public Task PerformRegularPayments();
 }

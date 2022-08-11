@@ -1,6 +1,6 @@
 using Common.Interfaces;
 using Operations.Dtos;
-using Operations.Dtos.Card;
+using Operations.Dtos.Cards;
 
 namespace Operations.Entities;
 

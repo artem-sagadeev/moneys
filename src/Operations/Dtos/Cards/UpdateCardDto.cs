@@ -1,4 +1,4 @@
-﻿namespace Operations.Dtos.Card;
+﻿namespace Operations.Dtos.Cards;
 
 public class UpdateCardDto
 {

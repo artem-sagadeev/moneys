@@ -1,4 +1,4 @@
-namespace Operations.Dtos.IncomeRecord;
+namespace Operations.Dtos.IncomeRecords;
 
 public class UpdateIncomeRecordDto
 {

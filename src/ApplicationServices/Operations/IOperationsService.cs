@@ -1,8 +1,8 @@
 ﻿using System.Security.Claims;
 using Operations.Dtos;
-using Operations.Dtos.Card;
-using Operations.Dtos.IncomeRecord;
-using Operations.Dtos.PaymentRecord;
+using Operations.Dtos.Cards;
+using Operations.Dtos.IncomeRecords;
+using Operations.Dtos.PaymentRecords;
 using Operations.Entities;
 using Operations.Interfaces;
 

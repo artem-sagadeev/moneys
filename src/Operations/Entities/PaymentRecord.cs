@@ -1,5 +1,5 @@
 using Operations.Dtos;
-using Operations.Dtos.PaymentRecord;
+using Operations.Dtos.PaymentRecords;
 using Operations.Interfaces;
 
 namespace Operations.Entities;
@@ -24,13 +24,14 @@ public class PaymentRecord : IOperationRecord
 
     public bool IsRegularPaymentRecord => RegularPaymentId is not null;
 
-    public PaymentRecord(CreatePaymentRecordDto recordDto)
+    public PaymentRecord(CreatePaymentRecordDto dto)
     {
         Id = Guid.NewGuid();
-        Name = recordDto.Name;
-        Amount = recordDto.Amount;
+        Name = dto.Name;
+        Amount = dto.Amount;
         DateTime = DateTime.UtcNow;
-        CardId = recordDto.CardId;
+        CardId = dto.CardId;
+        RegularPaymentId = dto.RegularPaymentId;
     }
     
     public PaymentRecord() {}

@@ -1,8 +1,8 @@
 ﻿using Operations.Enums;
 
-namespace Operations.Dtos.RegularIncome;
+namespace Operations.Dtos.RegularPayments;
 
-public class CreateRegularIncomeDto
+public class CreateRegularPaymentDto
 {
     public string Name { get; set; }
     

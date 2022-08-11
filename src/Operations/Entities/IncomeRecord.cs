@@ -1,5 +1,5 @@
 using Operations.Dtos;
-using Operations.Dtos.IncomeRecord;
+using Operations.Dtos.IncomeRecords;
 using Operations.Interfaces;
 
 namespace Operations.Entities;
@@ -24,13 +24,14 @@ public class IncomeRecord : IOperationRecord
 
     public bool IsRegularIncomeRecord => RegularIncomeId is not null;
     
-    public IncomeRecord(CreateIncomeRecordDto recordDto)
+    public IncomeRecord(CreateIncomeRecordDto dto)
     {
         Id = Guid.NewGuid();
-        Name = recordDto.Name;
-        Amount = recordDto.Amount;
+        Name = dto.Name;
+        Amount = dto.Amount;
         DateTime = DateTime.UtcNow;
-        CardId = recordDto.CardId;
+        CardId = dto.CardId;
+        RegularIncomeId = dto.RegularIncomeId;
     }
     
     public IncomeRecord() {}

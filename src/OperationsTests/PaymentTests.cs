@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using NUnit.Framework;
 using Operations.Data;
 using Operations.Dtos;
-using Operations.Dtos.PaymentRecord;
+using Operations.Dtos.PaymentRecords;
 using Operations.Entities;
 using Operations.Logic.Payments;
 
