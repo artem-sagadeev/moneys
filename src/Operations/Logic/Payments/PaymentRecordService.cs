@@ -3,24 +3,25 @@ using Common.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Operations.Data;
 using Operations.Dtos;
+using Operations.Dtos.PaymentRecord;
 using Operations.Entities;
 
 namespace Operations.Logic.Payments;
 
-public class PaymentService : IPaymentService
+public class PaymentRecordService : IPaymentRecordService
 {
     private readonly OperationsContext _context;
 
-    public PaymentService(OperationsContext context)
+    public PaymentRecordService(OperationsContext context)
     {
         _context = context;
     }
 
     public async Task<PaymentRecord> Get(Guid id)
     {
-        var payment = await _context.PaymentRecords.GetById(id);
+        var paymentRecord = await _context.PaymentRecords.GetById(id);
 
-        return payment;
+        return paymentRecord;
     }
 
     public async Task<List<PaymentRecord>> GetByCardId(Guid cardId)
@@ -29,7 +30,7 @@ public class PaymentService : IPaymentService
 
         var payments = await _context
             .PaymentRecords
-            .Where(payment => payment.CardId == cardId)
+            .Where(paymentRecord => paymentRecord.CardId == cardId)
             .ToListAsync();
 
         return payments;
@@ -60,47 +61,47 @@ public class PaymentService : IPaymentService
         if (recordDto.Amount > card.Balance)
             throw new NotEnoughMoneyException();
 
-        var payment = new PaymentRecord(recordDto);
-        _context.PaymentRecords.Add(payment);
-        card.Balance -= payment.Amount;
+        var paymentRecord = new PaymentRecord(recordDto);
+        _context.PaymentRecords.Add(paymentRecord);
+        card.Balance -= paymentRecord.Amount;
         await _context.SaveChangesAsync();
 
-        return payment.Id;
+        return paymentRecord.Id;
     }
 
     public async Task Update(UpdatePaymentRecordDto recordDto)
     {
-        var payment = await _context.PaymentRecords.GetById(recordDto.Id);
+        var paymentRecord = await _context.PaymentRecords.GetById(recordDto.Id);
 
-        if (recordDto.CardId != payment.CardId)
+        if (recordDto.CardId != paymentRecord.CardId)
         {
-            var currentCard = await _context.Cards.GetById(payment.CardId);
+            var currentCard = await _context.Cards.GetById(paymentRecord.CardId);
             var newCard = await _context.Cards.GetById(recordDto.CardId);
 
-            if (newCard.Balance < payment.Amount)
+            if (newCard.Balance < paymentRecord.Amount)
                 throw new NotEnoughMoneyException();
             
-            payment.CardId = recordDto.CardId;
-            currentCard.Balance += payment.Amount;
-            newCard.Balance -= payment.Amount;
+            paymentRecord.CardId = recordDto.CardId;
+            currentCard.Balance += paymentRecord.Amount;
+            newCard.Balance -= paymentRecord.Amount;
         }
 
-        payment.Name = recordDto.Name;
+        paymentRecord.Name = recordDto.Name;
         await _context.SaveChangesAsync();
     }
 
     public async Task Delete(Guid id)
     {
-        var payment = await _context
+        var paymentRecord = await _context
             .PaymentRecords
             .Include(payment => payment.Card)
             .SingleOrDefaultAsync(payment => payment.Id == id);
 
-        if (payment is null)
+        if (paymentRecord is null)
             throw new EntityNotFoundException();
 
-        payment.Card.Balance += payment.Amount;
-        _context.PaymentRecords.Remove(payment);
+        paymentRecord.Card.Balance += paymentRecord.Amount;
+        _context.PaymentRecords.Remove(paymentRecord);
         await _context.SaveChangesAsync();
     }
 }

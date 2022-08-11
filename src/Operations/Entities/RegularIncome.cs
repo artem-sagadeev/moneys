@@ -1,5 +1,8 @@
-﻿using Operations.Enums;
+﻿using Operations.Dtos;
+using Operations.Dtos.RegularIncome;
+using Operations.Enums;
 using Operations.Interfaces;
+using Operations.Logic;
 
 namespace Operations.Entities;
 
@@ -22,4 +25,17 @@ public class RegularIncome : IRegularOperation
     public DateTime NextExecution { get; set; }
     
     public List<IncomeRecord> IncomeRecords { get; set; }
+
+    public RegularIncome(CreateRegularIncomeDto dto)
+    {
+        Id = Guid.NewGuid();
+        Name = dto.Name;
+        Amount = dto.Amount;
+        CardId = dto.CardId;
+        Frequency = dto.Frequency;
+        IsActive = true;
+        NextExecution = FrequencyHelper.CalculateNextExecution(DateTime.Now, dto.Frequency);
+    }
+    
+    private RegularIncome() {}
 }

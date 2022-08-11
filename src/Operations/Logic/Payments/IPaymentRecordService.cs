@@ -1,9 +1,10 @@
 using Operations.Dtos;
+using Operations.Dtos.PaymentRecord;
 using Operations.Entities;
 
 namespace Operations.Logic.Payments;
 
-public interface IPaymentService
+public interface IPaymentRecordService
 {
     public Task<PaymentRecord> Get(Guid id);
     

@@ -1,4 +1,5 @@
 using Operations.Dtos;
+using Operations.Dtos.PaymentRecord;
 using Operations.Interfaces;
 
 namespace Operations.Entities;

@@ -39,7 +39,7 @@ namespace Operations.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Cards");
+                    b.ToTable("Cards", (string)null);
                 });
 
             modelBuilder.Entity("Operations.Entities.IncomeRecord", b =>
@@ -69,7 +69,7 @@ namespace Operations.Migrations
 
                     b.HasIndex("RegularIncomeId");
 
-                    b.ToTable("IncomeRecords");
+                    b.ToTable("IncomeRecords", (string)null);
                 });
 
             modelBuilder.Entity("Operations.Entities.PaymentRecord", b =>
@@ -99,7 +99,7 @@ namespace Operations.Migrations
 
                     b.HasIndex("RegularPaymentId");
 
-                    b.ToTable("PaymentRecords");
+                    b.ToTable("PaymentRecords", (string)null);
                 });
 
             modelBuilder.Entity("Operations.Entities.RegularIncome", b =>
@@ -130,7 +130,7 @@ namespace Operations.Migrations
 
                     b.HasIndex("CardId");
 
-                    b.ToTable("RegularIncomes");
+                    b.ToTable("RegularIncomes", (string)null);
                 });
 
             modelBuilder.Entity("Operations.Entities.RegularPayment", b =>
@@ -161,7 +161,7 @@ namespace Operations.Migrations
 
                     b.HasIndex("CardId");
 
-                    b.ToTable("RegularPayments");
+                    b.ToTable("RegularPayments", (string)null);
                 });
 
             modelBuilder.Entity("Operations.Entities.IncomeRecord", b =>

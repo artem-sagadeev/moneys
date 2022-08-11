@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using NUnit.Framework;
 using Operations.Data;
 using Operations.Dtos;
+using Operations.Dtos.IncomeRecord;
 using Operations.Entities;
 using Operations.Logic.Incomes;
 
@@ -11,7 +12,7 @@ namespace OperationsTests;
 
 public class IncomeTests
 {
-    private IIncomeService _incomeService;
+    private IIncomeRecordService _incomeRecordService;
     private OperationsContext _context;
     
     [SetUp]
@@ -30,7 +31,7 @@ public class IncomeTests
         }
 
         _context = new OperationsContext(options);
-        _incomeService = new IncomeService(_context);
+        _incomeRecordService = new IncomeRecordService(_context);
     }
 
     [TearDown]
@@ -48,7 +49,7 @@ public class IncomeTests
     {
         var income = Seed.IncomeRecords[0];
         
-        var returnedIncome = await _incomeService.Get(income.Id);
+        var returnedIncome = await _incomeRecordService.Get(income.Id);
         
         Assert.That(returnedIncome, Is.Not.Null);
         Assert.That(returnedIncome.Id, Is.EqualTo(income.Id));
@@ -61,7 +62,7 @@ public class IncomeTests
         
         Assert.That(async () =>
         {
-            await _incomeService.Get(notExistedId);
+            await _incomeRecordService.Get(notExistedId);
         }, Throws.Exception.TypeOf<EntityNotFoundException>());
     }
 
@@ -71,7 +72,7 @@ public class IncomeTests
         var card = Seed.Cards[0];
         var incomes = Seed.IncomeRecords.Where(income => income.CardId == card.Id).ToList();
 
-        var returnedIncomes = await _incomeService.GetByCardId(card.Id);
+        var returnedIncomes = await _incomeRecordService.GetByCardId(card.Id);
         
         Assert.That(returnedIncomes, Is.Not.Null);
         Assert.That(returnedIncomes, Has.Count.EqualTo(incomes.Count));
@@ -88,7 +89,7 @@ public class IncomeTests
         
         Assert.That(async () =>
         {
-            await _incomeService.GetByCardId(notExistedId);
+            await _incomeRecordService.GetByCardId(notExistedId);
         }, Throws.Exception.TypeOf<EntityNotFoundException>());
     }
 
@@ -97,7 +98,7 @@ public class IncomeTests
     {
         var card = Seed.CardsWithoutIncomeRecords[0];
 
-        var returnedIncomes = await _incomeService.GetByCardId(card.Id);
+        var returnedIncomes = await _incomeRecordService.GetByCardId(card.Id);
         
         Assert.That(returnedIncomes, Is.TypeOf<List<IncomeRecord>>());
         Assert.That(returnedIncomes, Has.Count.EqualTo(0));
@@ -109,7 +110,7 @@ public class IncomeTests
         var cardIds = Seed.Cards.Ids();
         var incomes = Seed.IncomeRecords.Where(income => cardIds.Contains(income.CardId)).ToList();
         
-        var returnedIncomes = await _incomeService.GetByCardIds(cardIds);
+        var returnedIncomes = await _incomeRecordService.GetByCardIds(cardIds);
         
         Assert.That(returnedIncomes, Is.Not.Null);
         Assert.That(returnedIncomes, Has.Count.EqualTo(incomes.Count));
@@ -127,7 +128,7 @@ public class IncomeTests
         
         Assert.That(async () =>
         {
-            await _incomeService.GetByCardIds(cardIds);
+            await _incomeRecordService.GetByCardIds(cardIds);
         }, Throws.Exception.TypeOf<EntityNotFoundException>());
     }
 
@@ -136,7 +137,7 @@ public class IncomeTests
     {
         var cardIds = Seed.CardsWithoutIncomeRecords.Ids();
 
-        var returnedIncomes = await _incomeService.GetByCardIds(cardIds);
+        var returnedIncomes = await _incomeRecordService.GetByCardIds(cardIds);
         
         Assert.That(returnedIncomes, Is.TypeOf<List<IncomeRecord>>());
         Assert.That(returnedIncomes, Has.Count.EqualTo(0));
@@ -152,7 +153,7 @@ public class IncomeTests
             CardId = Seed.Cards[0].Id
         };
 
-        var id = await _incomeService.Create(dto);
+        var id = await _incomeRecordService.Create(dto);
 
         var createdIncome = await _context.IncomeRecords.GetById(id);
         Assert.That(createdIncome, Is.Not.Null);
@@ -177,7 +178,7 @@ public class IncomeTests
             CardId = card.Id
         };
 
-        await _incomeService.Create(dto);
+        await _incomeRecordService.Create(dto);
         
         var updatedBalance = (await _context.Cards.GetById(card.Id)).Balance;
         Assert.That(updatedBalance, Is.EqualTo(card.Balance + dto.Amount));
@@ -195,7 +196,7 @@ public class IncomeTests
 
         Assert.That(async () =>
         {
-            await _incomeService.Create(dto);
+            await _incomeRecordService.Create(dto);
         }, Throws.Exception.TypeOf<EntityNotFoundException>());
     }
 
@@ -210,7 +211,7 @@ public class IncomeTests
             CardId = income.CardId
         };
 
-        await _incomeService.Update(dto);
+        await _incomeRecordService.Update(dto);
 
         var updatedIncome = await _context.IncomeRecords.GetById(income.Id);
         Assert.That(updatedIncome.Name, Is.EqualTo(dto.Name));
@@ -229,7 +230,7 @@ public class IncomeTests
             CardId = newCard.Id
         };
         
-        await _incomeService.Update(dto);
+        await _incomeRecordService.Update(dto);
 
         var updatedOldCard = await _context.Cards.GetById(oldCard.Id);
         var updatedNewCard = await _context.Cards.GetById(newCard.Id);
@@ -252,7 +253,7 @@ public class IncomeTests
         
         Assert.That(async () =>
         {
-            await _incomeService.Update(dto);
+            await _incomeRecordService.Update(dto);
         }, Throws.Exception.TypeOf<EntityNotFoundException>());
     }
 
@@ -270,7 +271,7 @@ public class IncomeTests
         
         Assert.That(async () =>
         {
-            await _incomeService.Update(dto);
+            await _incomeRecordService.Update(dto);
         }, Throws.Exception.TypeOf<EntityNotFoundException>()); 
     }
 
@@ -287,7 +288,7 @@ public class IncomeTests
         
         Assert.That(async () =>
         {
-            await _incomeService.Update(dto);
+            await _incomeRecordService.Update(dto);
         }, Throws.Exception.TypeOf<NotEnoughMoneyException>());
     }
 
@@ -296,7 +297,7 @@ public class IncomeTests
     {
         var incomeId = Seed.IncomeRecords[0].Id;
 
-        await _incomeService.Delete(incomeId);
+        await _incomeRecordService.Delete(incomeId);
 
         var deletedIncome = await _context.IncomeRecords.FindAsync(incomeId);
         Assert.That(deletedIncome, Is.Null);
@@ -308,7 +309,7 @@ public class IncomeTests
         var income = Seed.IncomeRecords[0];
         var card = Seed.Cards.Single(card => card.Id == income.CardId);
         
-        await _incomeService.Delete(income.Id);
+        await _incomeRecordService.Delete(income.Id);
 
         var updatedCard = await _context.Cards.GetById(card.Id);
         Assert.That(updatedCard.Balance, Is.EqualTo(card.Balance - income.Amount));
@@ -321,7 +322,7 @@ public class IncomeTests
 
         Assert.That(async () =>
         {
-            await _incomeService.Delete(notExistedIncomeId);
+            await _incomeRecordService.Delete(notExistedIncomeId);
         }, Throws.Exception.TypeOf<EntityNotFoundException>());
     }
     
@@ -332,7 +333,7 @@ public class IncomeTests
         
         Assert.That(async () =>
         {
-            await _incomeService.Delete(incomeId);
+            await _incomeRecordService.Delete(incomeId);
         }, Throws.Exception.TypeOf<NotEnoughMoneyException>());
     }
 }

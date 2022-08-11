@@ -1,5 +1,6 @@
 using Common.Interfaces;
 using Operations.Dtos;
+using Operations.Dtos.Card;
 
 namespace Operations.Entities;
 
@@ -16,6 +17,10 @@ public class Card : IEntity, IUserBelonging
     public List<PaymentRecord> PaymentRecords { get; set; }
     
     public List<IncomeRecord> IncomeRecords { get; set; }
+    
+    public List<RegularIncome> RegularIncomes { get; set; }
+    
+    public List<RegularPayment> RegularPayments { get; set; }
 
     public Card(CreateCardDto dto)
     {

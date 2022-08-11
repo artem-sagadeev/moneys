@@ -23,8 +23,8 @@ var connectionString = builder.Environment.IsEnvironment(Environments.Developmen
 // Add services to the container.
 builder.Services.AddRazorPages();
 
-builder.Services.AddScoped<IIncomeService, IncomeService>();
-builder.Services.AddScoped<IPaymentService, PaymentService>();
+builder.Services.AddScoped<IIncomeRecordService, IncomeRecordService>();
+builder.Services.AddScoped<IPaymentRecordService, PaymentRecordService>();
 builder.Services.AddScoped<ICardService, CardService>();
 builder.Services.AddDbContext<OperationsContext>(options =>
 {

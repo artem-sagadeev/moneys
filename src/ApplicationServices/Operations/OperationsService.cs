@@ -4,6 +4,9 @@ using Common.Extensions;
 using Identity.Entities;
 using Microsoft.AspNetCore.Identity;
 using Operations.Dtos;
+using Operations.Dtos.Card;
+using Operations.Dtos.IncomeRecord;
+using Operations.Dtos.PaymentRecord;
 using Operations.Entities;
 using Operations.Interfaces;
 using Operations.Logic.Cards;
@@ -14,16 +17,16 @@ namespace ApplicationServices.Operations;
 
 public class OperationsService : IOperationsService
 {
-    private readonly IPaymentService _paymentService;
-    private readonly IIncomeService _incomeService;
+    private readonly IPaymentRecordService _paymentRecordService;
+    private readonly IIncomeRecordService _incomeRecordService;
     private readonly ICardService _cardService;
     private readonly UserManager<User> _userManager;
 
-    public OperationsService(IPaymentService paymentService, 
-        IIncomeService incomeService, ICardService cardService, UserManager<User> userManager)
+    public OperationsService(IPaymentRecordService paymentRecordService, 
+        IIncomeRecordService incomeRecordService, ICardService cardService, UserManager<User> userManager)
     {
-        _paymentService = paymentService;
-        _incomeService = incomeService;
+        _paymentRecordService = paymentRecordService;
+        _incomeRecordService = incomeRecordService;
         _cardService = cardService;
         _userManager = userManager;
     }
@@ -42,8 +45,8 @@ public class OperationsService : IOperationsService
         var userCards = await GetAllUserCards(user);
         var userCardIds = userCards.Ids();
         
-        var payments = await _paymentService.GetByCardIds(userCardIds);
-        var incomes = await _incomeService.GetByCardIds(userCardIds);
+        var payments = await _paymentRecordService.GetByCardIds(userCardIds);
+        var incomes = await _incomeRecordService.GetByCardIds(userCardIds);
 
         var operations = payments
             .Select(payment => (IOperationRecord)payment)
@@ -59,8 +62,8 @@ public class OperationsService : IOperationsService
         if (cardIds.Any(cardId => !userCards.Ids().Contains(cardId)))
             throw new NoAccessException();
         
-        var payments = await _paymentService.GetByCardIds(cardIds);
-        var incomes = await _incomeService.GetByCardIds(cardIds);
+        var payments = await _paymentRecordService.GetByCardIds(cardIds);
+        var incomes = await _incomeRecordService.GetByCardIds(cardIds);
 
         var operations = payments
             .Select(payment => (IOperationRecord)payment)
@@ -75,7 +78,7 @@ public class OperationsService : IOperationsService
         if (!await HasUserAccessToCard(user, recordDto.CardId))
             throw new NoAccessException();
         
-        await _paymentService.Create(recordDto);
+        await _paymentRecordService.Create(recordDto);
     }
     
     public async Task CreateIncome(ClaimsPrincipal user, CreateIncomeRecordDto recordDto)
@@ -83,7 +86,7 @@ public class OperationsService : IOperationsService
         if (!await HasUserAccessToCard(user, recordDto.CardId))
             throw new NoAccessException();
         
-        await _incomeService.Create(recordDto);
+        await _incomeRecordService.Create(recordDto);
     }
 
     public async Task UpdatePayment(ClaimsPrincipal user, UpdatePaymentRecordDto recordDto)
@@ -91,7 +94,7 @@ public class OperationsService : IOperationsService
         if (!await HasUserAccessToPayment(user, recordDto.Id) || !await HasUserAccessToCard(user, recordDto.CardId))
             throw new NoAccessException();
         
-        await _paymentService.Update(recordDto);
+        await _paymentRecordService.Update(recordDto);
     }
 
     public async Task UpdateIncome(ClaimsPrincipal user, UpdateIncomeRecordDto recordDto)
@@ -99,7 +102,7 @@ public class OperationsService : IOperationsService
         if (!await HasUserAccessToIncome(user, recordDto.Id) || !await HasUserAccessToCard(user, recordDto.CardId))
             throw new NoAccessException();
         
-        await _incomeService.Update(recordDto);
+        await _incomeRecordService.Update(recordDto);
     }
 
     public async Task DeletePayment(ClaimsPrincipal user, Guid paymentId)
@@ -107,7 +110,7 @@ public class OperationsService : IOperationsService
         if (!await HasUserAccessToPayment(user, paymentId))
             throw new NoAccessException();
 
-        await _paymentService.Delete(paymentId);
+        await _paymentRecordService.Delete(paymentId);
     }
 
     public async Task DeleteIncome(ClaimsPrincipal user, Guid incomeId)
@@ -115,7 +118,7 @@ public class OperationsService : IOperationsService
         if (!await HasUserAccessToIncome(user, incomeId))
             throw new NoAccessException();
 
-        await _incomeService.Delete(incomeId);
+        await _incomeRecordService.Delete(incomeId);
     }
 
     public async Task CreateCard(ClaimsPrincipal user, CreateCardDto dto)
@@ -154,7 +157,7 @@ public class OperationsService : IOperationsService
     {
         var currentUser = await _userManager.GetUserAsync(user);
         var userCards = await _cardService.GetByUserId(currentUser.Id);
-        var payment = await _paymentService.Get(paymentId);
+        var payment = await _paymentRecordService.Get(paymentId);
 
         return userCards.Ids().Contains(payment.CardId);
     }
@@ -163,7 +166,7 @@ public class OperationsService : IOperationsService
     {
         var currentUser = await _userManager.GetUserAsync(user);
         var userCards = await _cardService.GetByUserId(currentUser.Id);
-        var income = await _incomeService.Get(incomeId);
+        var income = await _incomeRecordService.Get(incomeId);
 
         return userCards.Ids().Contains(income.CardId);
     }

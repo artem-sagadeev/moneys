@@ -1,9 +1,10 @@
 using Operations.Dtos;
+using Operations.Dtos.IncomeRecord;
 using Operations.Entities;
 
 namespace Operations.Logic.Incomes;
 
-public interface IIncomeService
+public interface IIncomeRecordService
 {
     public Task<IncomeRecord> Get(Guid id);
 
@@ -11,9 +12,9 @@ public interface IIncomeService
     
     public Task<List<IncomeRecord>> GetByCardIds(List<Guid> cardIds); 
 
-    public Task<Guid> Create(CreateIncomeRecordDto recordDto);
+    public Task<Guid> Create(CreateIncomeRecordDto dto);
 
-    public Task Update(UpdateIncomeRecordDto recordDto);
+    public Task Update(UpdateIncomeRecordDto dto);
 
     public Task Delete(Guid id);
 }

@@ -1,4 +1,5 @@
 using Operations.Dtos;
+using Operations.Dtos.Card;
 using Operations.Entities;
 
 namespace Operations.Logic.Cards;

@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using NUnit.Framework;
 using Operations.Data;
 using Operations.Dtos;
+using Operations.Dtos.PaymentRecord;
 using Operations.Entities;
 using Operations.Logic.Payments;
 
@@ -11,7 +12,7 @@ namespace OperationsTests;
 
 public class PaymentTests
 {
-    private IPaymentService _paymentService;
+    private IPaymentRecordService _paymentRecordService;
     private OperationsContext _context;
     
     [SetUp]
@@ -30,7 +31,7 @@ public class PaymentTests
         }
 
         _context = new OperationsContext(options);
-        _paymentService = new PaymentService(_context);
+        _paymentRecordService = new PaymentRecordService(_context);
     }
 
     [TearDown]
@@ -48,7 +49,7 @@ public class PaymentTests
     {
         var payment = Seed.PaymentRecords[0];
         
-        var returnedPayment = await _paymentService.Get(payment.Id);
+        var returnedPayment = await _paymentRecordService.Get(payment.Id);
         
         Assert.That(returnedPayment, Is.Not.Null);
         Assert.That(returnedPayment.Id, Is.EqualTo(payment.Id));
@@ -61,7 +62,7 @@ public class PaymentTests
         
         Assert.That(async () =>
         {
-            await _paymentService.Get(notExistedId);
+            await _paymentRecordService.Get(notExistedId);
         }, Throws.Exception.TypeOf<EntityNotFoundException>());
     }
 
@@ -71,7 +72,7 @@ public class PaymentTests
         var card = Seed.Cards[0];
         var payments = Seed.PaymentRecords.Where(payment => payment.CardId == card.Id).ToList();
 
-        var returnedPayments = await _paymentService.GetByCardId(card.Id);
+        var returnedPayments = await _paymentRecordService.GetByCardId(card.Id);
         
         Assert.That(returnedPayments, Is.Not.Null);
         Assert.That(returnedPayments, Has.Count.EqualTo(payments.Count));
@@ -88,7 +89,7 @@ public class PaymentTests
         
         Assert.That(async () =>
         {
-            await _paymentService.GetByCardId(notExistedId);
+            await _paymentRecordService.GetByCardId(notExistedId);
         }, Throws.Exception.TypeOf<EntityNotFoundException>());
     }
 
@@ -97,7 +98,7 @@ public class PaymentTests
     {
         var card = Seed.CardsWithoutPaymentRecords[0];
 
-        var returnedPayments = await _paymentService.GetByCardId(card.Id);
+        var returnedPayments = await _paymentRecordService.GetByCardId(card.Id);
         
         Assert.That(returnedPayments, Is.TypeOf<List<PaymentRecord>>());
         Assert.That(returnedPayments, Has.Count.EqualTo(0));
@@ -109,7 +110,7 @@ public class PaymentTests
         var cardIds = Seed.Cards.Ids();
         var payments = Seed.PaymentRecords.Where(payment => cardIds.Contains(payment.CardId)).ToList();
         
-        var returnedPayments = await _paymentService.GetByCardIds(cardIds);
+        var returnedPayments = await _paymentRecordService.GetByCardIds(cardIds);
         
         Assert.That(returnedPayments, Is.Not.Null);
         Assert.That(returnedPayments, Has.Count.EqualTo(payments.Count));
@@ -127,7 +128,7 @@ public class PaymentTests
         
         Assert.That(async () =>
         {
-            await _paymentService.GetByCardIds(cardIds);
+            await _paymentRecordService.GetByCardIds(cardIds);
         }, Throws.Exception.TypeOf<EntityNotFoundException>());
     }
 
@@ -136,7 +137,7 @@ public class PaymentTests
     {
         var cardIds = Seed.CardsWithoutPaymentRecords.Ids();
 
-        var returnedPayments = await _paymentService.GetByCardIds(cardIds);
+        var returnedPayments = await _paymentRecordService.GetByCardIds(cardIds);
         
         Assert.That(returnedPayments, Is.TypeOf<List<PaymentRecord>>());
         Assert.That(returnedPayments, Has.Count.EqualTo(0));
@@ -152,7 +153,7 @@ public class PaymentTests
             CardId = Seed.Cards[0].Id
         };
 
-        var id = await _paymentService.Create(dto);
+        var id = await _paymentRecordService.Create(dto);
 
         var createdPayment = await _context.PaymentRecords.GetById(id);
         Assert.That(createdPayment, Is.Not.Null);
@@ -177,7 +178,7 @@ public class PaymentTests
             CardId = card.Id
         };
 
-        await _paymentService.Create(dto);
+        await _paymentRecordService.Create(dto);
         
         var updatedBalance = (await _context.Cards.GetById(card.Id)).Balance;
         Assert.That(updatedBalance, Is.EqualTo(card.Balance - dto.Amount));
@@ -195,7 +196,7 @@ public class PaymentTests
 
         Assert.That(async () =>
         {
-            await _paymentService.Create(dto);
+            await _paymentRecordService.Create(dto);
         }, Throws.Exception.TypeOf<EntityNotFoundException>());
     }
     
@@ -212,7 +213,7 @@ public class PaymentTests
 
         Assert.That(async () =>
         {
-            await _paymentService.Create(dto);
+            await _paymentRecordService.Create(dto);
         }, Throws.Exception.TypeOf<NotEnoughMoneyException>());
     }
 
@@ -227,7 +228,7 @@ public class PaymentTests
             CardId = payment.CardId
         };
 
-        await _paymentService.Update(dto);
+        await _paymentRecordService.Update(dto);
 
         var updatedPayment = await _context.PaymentRecords.GetById(payment.Id);
         Assert.That(updatedPayment.Name, Is.EqualTo(dto.Name));
@@ -246,7 +247,7 @@ public class PaymentTests
             CardId = newCard.Id
         };
         
-        await _paymentService.Update(dto);
+        await _paymentRecordService.Update(dto);
 
         var updatedOldCard = await _context.Cards.GetById(oldCard.Id);
         var updatedNewCard = await _context.Cards.GetById(newCard.Id);
@@ -269,7 +270,7 @@ public class PaymentTests
         
         Assert.That(async () =>
         {
-            await _paymentService.Update(dto);
+            await _paymentRecordService.Update(dto);
         }, Throws.Exception.TypeOf<EntityNotFoundException>());
     }
 
@@ -287,7 +288,7 @@ public class PaymentTests
         
         Assert.That(async () =>
         {
-            await _paymentService.Update(dto);
+            await _paymentRecordService.Update(dto);
         }, Throws.Exception.TypeOf<EntityNotFoundException>()); 
     }
 
@@ -304,7 +305,7 @@ public class PaymentTests
         
         Assert.That(async () =>
         {
-            await _paymentService.Update(dto);
+            await _paymentRecordService.Update(dto);
         }, Throws.Exception.TypeOf<NotEnoughMoneyException>());
     }
 
@@ -313,7 +314,7 @@ public class PaymentTests
     {
         var paymentId = Seed.PaymentRecords[0].Id;
 
-        await _paymentService.Delete(paymentId);
+        await _paymentRecordService.Delete(paymentId);
 
         var deletedPayment = await _context.PaymentRecords.FindAsync(paymentId);
         Assert.That(deletedPayment, Is.Null);
@@ -325,7 +326,7 @@ public class PaymentTests
         var payment = Seed.PaymentRecords[0];
         var card = Seed.Cards.Single(card => card.Id == payment.CardId);
         
-        await _paymentService.Delete(payment.Id);
+        await _paymentRecordService.Delete(payment.Id);
 
         var updatedCard = await _context.Cards.GetById(card.Id);
         Assert.That(updatedCard.Balance, Is.EqualTo(card.Balance + payment.Amount));
@@ -338,7 +339,7 @@ public class PaymentTests
 
         Assert.That(async () =>
         {
-            await _paymentService.Delete(notExistedPaymentId);
+            await _paymentRecordService.Delete(notExistedPaymentId);
         }, Throws.Exception.TypeOf<EntityNotFoundException>());
     }
 }

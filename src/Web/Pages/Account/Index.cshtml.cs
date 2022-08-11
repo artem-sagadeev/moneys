@@ -4,6 +4,7 @@ using Identity.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Operations.Dtos;
+using Operations.Dtos.Card;
 using Operations.Entities;
 
 namespace Web.Pages.Account;

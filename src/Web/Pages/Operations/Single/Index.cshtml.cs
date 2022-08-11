@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Operations.Dtos;
+using Operations.Dtos.IncomeRecord;
+using Operations.Dtos.PaymentRecord;
 using Operations.Entities;
 using Operations.Interfaces;
 
