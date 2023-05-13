@@ -1,0 +1,31 @@
+version: '3.4'
+
+services:
+  moneys.web:
+    container_name: moneys.web
+    image: moneys.web:latest
+    depends_on:
+      - "moneys.db"
+    build:
+      context: ./src
+      dockerfile: ./Web/Dockerfile
+    ports:
+      - "80:80"
+    environment:
+      DB_CONNECTION_STRING: "host=moneys.db;port=5432;database=moneys_db;username=postgres;password=postgres"
+
+  moneys.db:
+    container_name: moneys.db
+    image: postgres:latest
+    ports:
+      - "5432"
+    restart: always
+    volumes:
+      - db_volume:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "postgres"
+      POSTGRES_DB: "moneys_db"
+
+volumes:
+  db_volume:

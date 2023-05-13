@@ -18,7 +18,7 @@ using ShoppingLists.Logic.ShoppingLists;
 var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Environment.IsEnvironment(Environments.Development)
     ? builder.Configuration.GetConnectionString("Local")
-    : ConnectionStringConverter.ConvertFromUrl(Environment.GetEnvironmentVariable("DATABASE_URL")!);
+    : Environment.GetEnvironmentVariable("DB_CONNECTION_STRING");
 
 // Add services to the container.
 builder.Services.AddRazorPages();
