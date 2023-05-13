@@ -1,7 +1,6 @@
 using ApplicationServices.Identity;
 using ApplicationServices.Operations;
 using ApplicationServices.ShoppingLists;
-using Common.Helpers;
 using Identity.Data;
 using Identity.Entities;
 using Identity.Logic;
@@ -14,11 +13,12 @@ using Operations.Logic.Payments;
 using ShoppingLists.Data;
 using ShoppingLists.Logic.ListItems;
 using ShoppingLists.Logic.ShoppingLists;
+using Web;
 
 var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Environment.IsEnvironment(Environments.Development)
     ? builder.Configuration.GetConnectionString("Local")
-    : Environment.GetEnvironmentVariable("DB_CONNECTION_STRING");
+    : Environment.GetEnvironmentVariable("DB_CONNECTION_STRING")!;
 
 // Add services to the container.
 builder.Services.AddRazorPages();
@@ -76,5 +76,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapRazorPages().RequireAuthorization();
+
+app.MigrateDatabase();
 
 app.Run();
