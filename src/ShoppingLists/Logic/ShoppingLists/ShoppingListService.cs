@@ -39,7 +39,7 @@ public class ShoppingListService : IShoppingListService
         var shoppingList = await _context
             .ShoppingLists
             .Include(list => list.ListItems)
-            .SingleOrDefaultAsync();
+            .SingleOrDefaultAsync(list => list.Id == id);
 
         if (shoppingList is null)
             throw new EntityNotFoundException();
