@@ -20,7 +20,7 @@ public class DetailsModel : PageModel
         _shoppingListsService = shoppingListsService;
         _operationsService = operationsService;
     }
-    
+
     public ShoppingList ShoppingList { get; private set; }
     
     public List<Card> AllCards { get; private set; }
@@ -41,41 +41,41 @@ public class DetailsModel : PageModel
     {
         await _shoppingListsService.CreateListItem(User, dto);
 
-        return RedirectToPage();
+        return RedirectToPage(new {id = dto.ShoppingListId});
     }
 
-    public async Task<IActionResult> OnPostPurchase(Guid id)
+    public async Task<IActionResult> OnPostPurchase(Guid listId, Guid itemId)
     {
-        await _shoppingListsService.PurchaseListItem(User, id);
+        await _shoppingListsService.PurchaseListItem(User, itemId);
 
-        return RedirectToPage();
+        return RedirectToPage(new {id = listId});
     }
     
-    public async Task<IActionResult> OnPostCancelPurchase(Guid id)
+    public async Task<IActionResult> OnPostCancelPurchase(Guid listId, Guid itemId)
     {
-        await _shoppingListsService.CancelPurchaseListItem(User, id);
+        await _shoppingListsService.CancelPurchaseListItem(User, itemId);
 
-        return RedirectToPage();
+        return RedirectToPage(new {id = listId});
     }
 
     public async Task<IActionResult> OnPostToOperations(CreatePaymentRecordDto recordDto)
     {
         await _operationsService.CreatePayment(User, recordDto);
 
-        return RedirectToPage();
+        return RedirectToPage(new {id = dto.ListId});
     }
 
     public async Task<IActionResult> OnPostUpdateListItem(UpdateListItemDto dto)
     {
         await _shoppingListsService.UpdateListItem(User, dto);
 
-        return RedirectToPage();
+        return RedirectToPage(new {id = dto.ListId});
     }
 
-    public async Task<IActionResult> OnPostDeleteListItem(Guid id)
+    public async Task<IActionResult> OnPostDeleteListItem(Guid listId, Guid itemId)
     {
-        await _shoppingListsService.DeleteListItem(User, id);
+        await _shoppingListsService.DeleteListItem(User, itemId);
 
-        return RedirectToPage();
+        return RedirectToPage(new {id = listId});
     }
 }

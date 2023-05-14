@@ -9,4 +9,6 @@ public class UpdateRegularIncomeDto
     public int Amount { get; set; }
     
     public Guid CardId { get; set; }
+    
+    public Guid ListId { get; set; }
 }
