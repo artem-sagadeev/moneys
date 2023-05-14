@@ -9,4 +9,6 @@ public class UpdateListItemDto
     public int? Price { get; set; }
     
     public int Count { get; set; }
+    
+    public Guid ListId { get; set; }
 }

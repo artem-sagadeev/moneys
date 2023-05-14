@@ -1,4 +1,4 @@
-﻿@page
+﻿@page "{id}"
 @model Web.Pages.ShoppingLists.DetailsModel
 
 <div class="d-flex mb-3">
@@ -47,13 +47,13 @@
                     @if (item.IsPurchased)
                     {
                         <form method="POST">
-                            <button type="submit" class="btn btn-dark" asp-page-handler="CancelPurchase" asp-route-id="@item.Id">Cancel Purchase</button>
+                            <button type="submit" class="btn btn-dark" asp-page-handler="CancelPurchase" asp-route-listId="@item.ShoppingListId" asp-route-itemId="@item.Id">Cancel Purchase</button>
                         </form>
                     }
                     else
                     {
                         <form method="POST">
-                            <button type="submit" class="btn btn-dark" asp-page-handler="Purchase" asp-route-id="@item.Id">Purchase</button>
+                            <button type="submit" class="btn btn-dark" asp-page-handler="Purchase" asp-route-listId="@item.ShoppingListId" asp-route-itemId="@item.Id">Purchase</button>
                         </form>
                     }
                 </div>
@@ -71,7 +71,7 @@
             <td>
                 <div>
                     <form method="POST">
-                        <button type="submit" class="btn btn-dark" asp-page-handler="DeleteListItem" asp-route-id="@item.Id">Delete</button>
+                        <button type="submit" class="btn btn-dark" asp-page-handler="DeleteListItem" asp-route-listId="@item.ShoppingListId" asp-route-itemId="@item.Id">Delete</button>
                     </form>
                 </div>
             </td>
