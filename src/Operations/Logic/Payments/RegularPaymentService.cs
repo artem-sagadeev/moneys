@@ -111,7 +111,7 @@ public class RegularPaymentService : IRegularPaymentService
         foreach (var regularPayment in regularPayments)
         {
             await _paymentRecordService.Create(new CreatePaymentRecordDto(regularPayment));
-            regularPayment.NextExecution = FrequencyHelper.CalculateNextExecution(DateTime.Now, regularPayment.Frequency);
+            regularPayment.NextExecution = NextExecutionCalculator.Calculate(DateTime.Now, regularPayment.Frequency);
         }
     }
 }

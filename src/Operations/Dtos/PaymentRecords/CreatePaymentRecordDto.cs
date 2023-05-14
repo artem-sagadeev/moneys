@@ -11,6 +11,8 @@ public class CreatePaymentRecordDto
     public Guid CardId { get; set; }
     
     public Guid? RegularPaymentId { get; set; }
+    
+    public Guid ListId { get; set; }
 
     public CreatePaymentRecordDto(RegularPayment regularPayment)
     {
@@ -18,7 +20,6 @@ public class CreatePaymentRecordDto
         Amount = regularPayment.Amount;
         CardId = regularPayment.CardId;
         RegularPaymentId = regularPayment.Id;
-
     }
     
     public CreatePaymentRecordDto() {}

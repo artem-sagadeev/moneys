@@ -2,7 +2,6 @@
 using ApplicationServices.ShoppingLists;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Operations.Dtos;
 using Operations.Dtos.PaymentRecords;
 using Operations.Entities;
 using ShoppingLists.Dtos;
@@ -62,7 +61,7 @@ public class DetailsModel : PageModel
     {
         await _operationsService.CreatePayment(User, recordDto);
 
-        return RedirectToPage(new {id = dto.ListId});
+        return RedirectToPage(new {id = recordDto.ListId});
     }
 
     public async Task<IActionResult> OnPostUpdateListItem(UpdateListItemDto dto)

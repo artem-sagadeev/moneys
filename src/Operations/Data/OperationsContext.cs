@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Operations.Data.Configurations;
 using Operations.Entities;
 
 namespace Operations.Data;
@@ -16,4 +17,9 @@ public class OperationsContext : DbContext
     public DbSet<RegularIncome> RegularIncomes { get; set; }
 
     public OperationsContext(DbContextOptions<OperationsContext> options) : base(options) { }
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder.ApplyConfiguration(new PaymentRecordConfiguration());
+    }
 }

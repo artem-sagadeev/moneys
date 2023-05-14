@@ -2,9 +2,9 @@
 
 namespace Operations.Logic;
 
-public static class FrequencyHelper
+public static class NextExecutionCalculator
 {
-    public static DateTime CalculateNextExecution(DateTime fromDateTime, Frequency frequency)
+    public static DateTime Calculate(DateTime fromDateTime, Frequency frequency)
     {
         var nextExecution = frequency switch
         {

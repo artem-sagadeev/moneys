@@ -36,7 +36,7 @@ public class RegularIncome : IRegularOperation
         CardId = dto.CardId;
         Frequency = dto.Frequency;
         IsActive = true;
-        NextExecution = FrequencyHelper.CalculateNextExecution(DateTime.Now, dto.Frequency);
+        NextExecution = NextExecutionCalculator.Calculate(DateTime.Now, dto.Frequency);
     }
     
     private RegularIncome() {}

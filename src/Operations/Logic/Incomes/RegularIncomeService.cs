@@ -111,7 +111,7 @@ public class RegularIncomeService : IRegularIncomeService
         foreach (var regularIncome in regularIncomes)
         {
             await _incomeRecordService.Create(new CreateIncomeRecordDto(regularIncome));
-            regularIncome.NextExecution = FrequencyHelper.CalculateNextExecution(DateTime.Now, regularIncome.Frequency);
+            regularIncome.NextExecution = NextExecutionCalculator.Calculate(DateTime.Now, regularIncome.Frequency);
         }
     }
 }

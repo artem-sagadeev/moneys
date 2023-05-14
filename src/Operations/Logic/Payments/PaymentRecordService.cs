@@ -2,7 +2,6 @@ using Common.Exceptions;
 using Common.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Operations.Data;
-using Operations.Dtos;
 using Operations.Dtos.PaymentRecords;
 using Operations.Entities;
 

@@ -1,5 +1,4 @@
 using Common.Interfaces;
-using Operations.Dtos;
 using Operations.Dtos.Cards;
 
 namespace Operations.Entities;
