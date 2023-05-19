@@ -14,6 +14,11 @@
                     <label for="updatePaymentName" class="form-label">Name</label>
                     <input type="text" class="form-control input-dark" id="updatePaymentName" name="name" autocomplete="off" value="@Model.Item2.Name">
                 </div>
+                <div class="mb-3">
+                    <label for="paymentAmountLabel" class="form-label">Amount</label>
+                    <input type="number" class="form-control input-dark" id="paymentAmountLabel" name="amount" autocomplete="off" step="0.01" min="0" value="@Model.Item2.Amount">
+                </div>
+
                 <div class="dropdown mb-3">
                     @* ReSharper disable once Html.IdDuplication *@
                     <button class="btn btn-outline-dark dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" id="dropdownMenuClickableInside" data-bs-auto-close="outside">

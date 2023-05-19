@@ -78,6 +78,21 @@ public class PaymentService : IPaymentService
         }
 
         payment.Name = dto.Name;
+
+        if (payment.Amount != dto.Amount)
+        {
+            var card = await _context.Cards.GetById(payment.CardId);
+
+            if (card.Balance + payment.Amount < dto.Amount)
+            {
+                throw new NotEnoughMoneyException();
+            }
+
+            card.Balance += payment.Amount;
+            payment.Amount = dto.Amount;
+            card.Balance -= payment.Amount;
+        }
+        
         await _context.SaveChangesAsync();
     }
 

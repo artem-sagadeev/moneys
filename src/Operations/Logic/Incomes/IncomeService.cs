@@ -75,6 +75,21 @@ public class IncomeService : IIncomeService
         }
 
         income.Name = dto.Name;
+        
+        if (income.Amount != dto.Amount)
+        {
+            var card = await _context.Cards.GetById(income.CardId);
+
+            if (card.Balance - income.Amount < dto.Amount)
+            {
+                throw new NotEnoughMoneyException();
+            }
+
+            card.Balance -= income.Amount;
+            income.Amount = dto.Amount;
+            card.Balance += income.Amount;
+        }
+        
         await _context.SaveChangesAsync();
     }
 
