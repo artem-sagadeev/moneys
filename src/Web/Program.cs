@@ -58,20 +58,6 @@ builder.Services.AddScoped<IShoppingListsService, ShoppingListsService>();
 
 var app = builder.Build();
 
-if (Environment.GetEnvironmentVariable("AUTOMIGRATE") == "True")
-{
-    using var scope = app.Services.CreateScope();
-    
-    var identityContext = scope.ServiceProvider.GetRequiredService<IdentityContext>();
-    identityContext.Database.Migrate();
-    
-    var operationsContext = scope.ServiceProvider.GetRequiredService<OperationsContext>();
-    operationsContext.Database.Migrate();
-    
-    var shoppingListsContext = scope.ServiceProvider.GetRequiredService<ShoppingListsContext>();
-    shoppingListsContext.Database.Migrate();
-}
-
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {

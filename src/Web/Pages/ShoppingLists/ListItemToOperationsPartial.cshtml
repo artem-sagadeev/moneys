@@ -17,7 +17,7 @@
                     </div>
                     <div class="mb-3">
                         <label for="amount" class="form-label">Amount</label>
-                        <input type="number" class="form-control input-dark" id="amount" name="amount" autocomplete="off" value="@(Model.Item1.Price * Model.Item1.Count)">
+                        <input type="number" class="form-control input-dark" id="amount" name="amount" autocomplete="off" value="@(Model.Item1.Price * Model.Item1.Count)" step="0.01" min="0">
                     </div>
                     <div class="dropdown mb-3">
                         @* ReSharper disable once Html.IdDuplication *@
