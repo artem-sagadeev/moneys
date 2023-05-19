@@ -24,7 +24,7 @@ public class IndexModel : PageModel
     
     public Dictionary<Guid, string> CardNames { get; set; }
     
-    public int Sum { get; set; }
+    public decimal Sum { get; set; }
     
     public List<IOperation> Operations { get; private set; }
 

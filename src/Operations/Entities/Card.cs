@@ -9,7 +9,7 @@ public class Card : IEntity, IUserBelonging
     
     public string Name { get; set; }
     
-    public int Balance { get; set; }
+    public decimal Balance { get; set; }
     
     public string UserId { get; set; }
     

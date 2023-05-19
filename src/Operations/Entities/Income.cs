@@ -10,7 +10,7 @@ public class Income : IOperation, IEntity
     
     public string Name { get; set; }
     
-    public int Amount { get; set; }
+    public decimal Amount { get; set; }
     
     public DateTime DateTime { get; set; }
     
