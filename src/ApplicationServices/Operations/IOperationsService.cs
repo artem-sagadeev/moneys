@@ -25,6 +25,8 @@ public interface IOperationsService
     
     public Task DeleteIncome(ClaimsPrincipal user, Guid incomeId);
 
+    public Task Transfer(ClaimsPrincipal user, TransferDto dto);
+
     public Task CreateCard(ClaimsPrincipal user, CreateCardDto dto);
 
     public Task UpdateCard(ClaimsPrincipal user, UpdateCardDto dto);

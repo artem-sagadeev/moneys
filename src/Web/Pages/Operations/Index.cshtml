@@ -20,6 +20,12 @@
             Add Income
         </button>
     </div>
+    <div class="col">
+        <!-- Button trigger modal -->
+        <button type="button" class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#transferModal">
+            Transfer
+        </button>
+    </div>
     <div class="dropdown col-4">
         @* ReSharper disable once Html.IdDuplication *@
         <button class="btn btn-dark dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" id="dropdownMenuClickableInside" data-bs-auto-close="outside">
@@ -113,3 +119,6 @@
 
 <!-- Add Income Modal -->
 <partial name="AddIncomePartial" model="@Model.AllCards"/>
+
+<!-- Transfer Modal -->
+<partial name="TransferPartial" model="@Model.AllCards"/>

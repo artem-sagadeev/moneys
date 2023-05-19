@@ -118,6 +118,31 @@ public class OperationsService : IOperationsService
         await _incomeService.Delete(incomeId);
     }
 
+    public async Task Transfer(ClaimsPrincipal user, TransferDto dto)
+    {
+        if (dto.FromCardId == dto.ToCardId)
+            throw new ArgumentException("Transfer to same card is not impossible");
+        
+        if (!await HasUserAccessToCard(user, dto.FromCardId))
+            throw new NoAccessException();
+        
+        if (!await HasUserAccessToCard(user, dto.ToCardId))
+            throw new NoAccessException();
+
+        await _paymentService.Create(new CreatePaymentDto
+        {
+            Name = dto.Name, 
+            Amount = dto.Amount, 
+            CardId = dto.FromCardId
+        });
+        await _incomeService.Create(new CreateIncomeDto
+        {
+            Name = dto.Name, 
+            Amount = dto.Amount, 
+            CardId = dto.ToCardId
+        });
+    }
+
     public async Task CreateCard(ClaimsPrincipal user, CreateCardDto dto)
     {
         var currentUser = await _userManager.GetUserAsync(user);

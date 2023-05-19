@@ -99,4 +99,11 @@ public class IndexModel : PageModel
 
         return RedirectToPage();
     }
+
+    public async Task<IActionResult> OnPostTransfer(TransferDto dto)
+    {
+        await _operationsService.Transfer(User, dto);
+
+        return RedirectToPage();
+    }
 }
