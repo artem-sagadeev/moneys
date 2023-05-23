@@ -75,7 +75,7 @@
         {
             <tr>
                 <th class="col-1" scope="row">-</th>
-                <td class="col-2">@payment.DateTime</td>
+                <td class="col-2">@payment.DateTime.ToShortDateString()</td>
                 <td class="col-3">@payment.Name</td>
                 <td class="col-2">@payment.Amount ₽</td>
                 <td class="col-2">@Model.CardNames[payment.CardId]</td>
@@ -89,7 +89,6 @@
             <div class="modal fade" id="@string.Concat("id", payment.Id)" tabindex="-1" aria-labelledby="updatePaymentModalLabel" aria-hidden="true">
                 <partial name="UpdatePaymentPartial" model="@(Model.AllCards, payment)"/>
             </div>
-            
         }
         else if (operation is Income income)
         {
